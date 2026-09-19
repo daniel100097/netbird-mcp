@@ -111,3 +111,24 @@ dist
 
 # TernJS port file
 .tern-port
+
+# Project outputs and local environment files
+dist/
+coverage/
+.env.*
+!.env.example
+.DS_Store
+
+# Local credentials, private keys, and MCP host settings
+.envrc
+.npmrc
+.netrc
+secrets/
+*.key
+*.pem
+*.p12
+*.pfx
+.mcp.json
+.cursor/
+.vscode/
+.idea/

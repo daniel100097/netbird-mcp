@@ -1,0 +1,45 @@
+services:
+  netbird-mcp: &app
+    image: netbird-mcp:local
+    build:
+      context: .
+      target: runtime
+    init: true
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      MCP_TRANSPORT: ${MCP_TRANSPORT:-sse}
+      MCP_HOST: 0.0.0.0
+      MCP_PORT: ${MCP_PORT:-3000}
+    ports:
+      - "${MCP_BIND_ADDRESS:-127.0.0.1}:${MCP_PORT:-3000}:${MCP_PORT:-3000}"
+    restart: unless-stopped
+    read_only: true
+    tmpfs:
+      - /tmp:size=16m,mode=1777
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    stop_grace_period: 10s
+
+  dev:
+    <<: *app
+    profiles: [dev]
+    image: netbird-mcp:dev
+    build:
+      context: .
+      target: development
+    volumes:
+      - ./src:/app/src
+      - ./tests:/app/tests
+    restart: "no"
+
+  test:
+    profiles: [test]
+    build:
+      context: .
+      target: test
+    init: true
+    network_mode: none

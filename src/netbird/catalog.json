@@ -1,0 +1,5344 @@
+{
+  "source": "https://raw.githubusercontent.com/netbirdio/netbird/7d8f4fa31c2c8a3ebd40f041065ddbae6055d5f3/shared/management/http/api/openapi.yml",
+  "tools": [
+    {
+      "name": "netbird_list_peers",
+      "description": "Returns a list of all peers. GET /api/peers",
+      "method": "GET",
+      "path": "/peers",
+      "features": [
+        "peers"
+      ],
+      "write": false,
+      "queryParameters": [
+        {
+          "name": "name",
+          "explode": true
+        },
+        {
+          "name": "ip",
+          "explode": true
+        }
+      ],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Filter peers by name"
+              },
+              "ip": {
+                "type": "string",
+                "description": "Filter peers by IP address"
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_get_peer",
+      "description": "Get information about a peer. GET /api/peers/{peerId}",
+      "method": "GET",
+      "path": "/peers/{peerId}",
+      "features": [
+        "peers"
+      ],
+      "write": false,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "peerId": {
+            "type": "string",
+            "description": "The unique identifier of a peer",
+            "minLength": 1,
+            "pattern": "^(?!\\.{1,2}$)[^/\\\\%?#\\s]+$"
+          }
+        },
+        "required": [
+          "peerId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_update_peer",
+      "description": "Update information about a peer. PUT /api/peers/{peerId}",
+      "method": "PUT",
+      "path": "/peers/{peerId}",
+      "features": [
+        "peers",
+        "peerControl"
+      ],
+      "write": true,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "peerId": {
+            "type": "string",
+            "description": "The unique identifier of a peer",
+            "minLength": 1,
+            "pattern": "^(?!\\.{1,2}$)[^/\\\\%?#\\s]+$"
+          },
+          "body": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "ssh_enabled": {
+                "type": "boolean"
+              },
+              "login_expiration_enabled": {
+                "type": "boolean"
+              },
+              "inactivity_expiration_enabled": {
+                "type": "boolean"
+              },
+              "approval_required": {
+                "description": "(Cloud only) Indicates whether peer needs approval",
+                "type": "boolean"
+              },
+              "ip": {
+                "description": "Peer's IP address",
+                "type": "string",
+                "format": "ipv4"
+              },
+              "ipv6": {
+                "description": "Peer's IPv6 overlay address. Omitted if IPv6 is not enabled for the account.",
+                "type": "string",
+                "format": "ipv6"
+              }
+            },
+            "required": [
+              "name",
+              "ssh_enabled",
+              "login_expiration_enabled",
+              "inactivity_expiration_enabled"
+            ]
+          }
+        },
+        "required": [
+          "peerId",
+          "body"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_delete_peer",
+      "description": "Delete a peer. DELETE /api/peers/{peerId}",
+      "method": "DELETE",
+      "path": "/peers/{peerId}",
+      "features": [
+        "peers",
+        "peerControl"
+      ],
+      "write": true,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "peerId": {
+            "type": "string",
+            "description": "The unique identifier of a peer",
+            "minLength": 1,
+            "pattern": "^(?!\\.{1,2}$)[^/\\\\%?#\\s]+$"
+          }
+        },
+        "required": [
+          "peerId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_list_accessible_peers",
+      "description": "Returns a list of peers that the specified peer can connect to within the network.. GET /api/peers/{peerId}/accessible-peers",
+      "method": "GET",
+      "path": "/peers/{peerId}/accessible-peers",
+      "features": [
+        "peers"
+      ],
+      "write": false,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "peerId": {
+            "type": "string",
+            "description": "The unique identifier of a peer",
+            "minLength": 1,
+            "pattern": "^(?!\\.{1,2}$)[^/\\\\%?#\\s]+$"
+          }
+        },
+        "required": [
+          "peerId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_list_peer_jobs",
+      "description": "Retrieve all jobs for a given peer. GET /api/peers/{peerId}/jobs",
+      "method": "GET",
+      "path": "/peers/{peerId}/jobs",
+      "features": [
+        "peers"
+      ],
+      "write": false,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "peerId": {
+            "type": "string",
+            "description": "The unique identifier of a peer",
+            "minLength": 1,
+            "pattern": "^(?!\\.{1,2}$)[^/\\\\%?#\\s]+$"
+          }
+        },
+        "required": [
+          "peerId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_create_peer_job",
+      "description": "Create a new job for a given peer. POST /api/peers/{peerId}/jobs",
+      "method": "POST",
+      "path": "/peers/{peerId}/jobs",
+      "features": [
+        "peers",
+        "peerControl"
+      ],
+      "write": true,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "peerId": {
+            "type": "string",
+            "description": "The unique identifier of a peer",
+            "minLength": 1,
+            "pattern": "^(?!\\.{1,2}$)[^/\\\\%?#\\s]+$"
+          },
+          "body": {
+            "type": "object",
+            "properties": {
+              "workload": {
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "description": "Identifies the type of workload the job will execute.\nCurrently only `\"bundle\"` is supported.\n",
+                        "enum": [
+                          "bundle"
+                        ]
+                      },
+                      "parameters": {
+                        "type": "object",
+                        "description": "These parameters control what gets included in the bundle and how it is processed.",
+                        "properties": {
+                          "bundle_for": {
+                            "type": "boolean",
+                            "description": "Whether to generate a bundle for the given timeframe."
+                          },
+                          "bundle_for_time": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 5,
+                            "description": "Time period in minutes for which to generate the bundle."
+                          },
+                          "log_file_count": {
+                            "type": "integer",
+                            "minimum": 1,
+                            "maximum": 1000,
+                            "description": "Maximum number of log files to include in the bundle."
+                          },
+                          "anonymize": {
+                            "type": "boolean",
+                            "description": "Whether sensitive data should be anonymized in the bundle."
+                          },
+                          "anonymize_level": {
+                            "type": "string",
+                            "description": "How much the anonymizer redacts. \"default\" (or empty) keeps internal IP ranges, \"strict\" also anonymizes them."
+                          },
+                          "upload_url": {
+                            "type": "string",
+                            "description": "Service URL the client requests an upload URL from before uploading the bundle. Empty selects the default upload server."
+                          }
+                        },
+                        "required": [
+                          "bundle_for",
+                          "bundle_for_time",
+                          "log_file_count",
+                          "anonymize"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "type",
+                      "parameters"
+                    ]
+                  }
+                ]
+              }
+            },
+            "required": [
+              "workload"
+            ]
+          }
+        },
+        "required": [
+          "peerId",
+          "body"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_get_peer_job",
+      "description": "Retrieve details of a specific job. GET /api/peers/{peerId}/jobs/{jobId}",
+      "method": "GET",
+      "path": "/peers/{peerId}/jobs/{jobId}",
+      "features": [
+        "peers"
+      ],
+      "write": false,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "peerId": {
+            "type": "string",
+            "description": "The unique identifier of a peer",
+            "minLength": 1,
+            "pattern": "^(?!\\.{1,2}$)[^/\\\\%?#\\s]+$"
+          },
+          "jobId": {
+            "type": "string",
+            "description": "The unique identifier of a job",
+            "minLength": 1,
+            "pattern": "^(?!\\.{1,2}$)[^/\\\\%?#\\s]+$"
+          }
+        },
+        "required": [
+          "peerId",
+          "jobId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_list_groups",
+      "description": "Returns a list of all groups. GET /api/groups",
+      "method": "GET",
+      "path": "/groups",
+      "features": [
+        "groups"
+      ],
+      "write": false,
+      "queryParameters": [
+        {
+          "name": "name",
+          "explode": true
+        }
+      ],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Filter groups by name (exact match)"
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_create_group",
+      "description": "Creates a group. POST /api/groups",
+      "method": "POST",
+      "path": "/groups",
+      "features": [
+        "groups"
+      ],
+      "write": true,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "body": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Group name identifier"
+              },
+              "peers": {
+                "type": "array",
+                "description": "List of peers ids",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "resources": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "description": "ID of the resource",
+                      "type": "string"
+                    },
+                    "type": {
+                      "allOf": [
+                        {
+                          "description": "Network resource type based of the address",
+                          "type": "string",
+                          "enum": [
+                            "host",
+                            "subnet",
+                            "domain"
+                          ]
+                        },
+                        {
+                          "type": "string",
+                          "enum": [
+                            "peer"
+                          ]
+                        }
+                      ],
+                      "description": "Type of the resource"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "type"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "body"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_get_group",
+      "description": "Get information about a group. GET /api/groups/{groupId}",
+      "method": "GET",
+      "path": "/groups/{groupId}",
+      "features": [
+        "groups"
+      ],
+      "write": false,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "groupId": {
+            "type": "string",
+            "description": "The unique identifier of a group",
+            "minLength": 1,
+            "pattern": "^(?!\\.{1,2}$)[^/\\\\%?#\\s]+$"
+          }
+        },
+        "required": [
+          "groupId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_update_group",
+      "description": "Update/Replace a group. PUT /api/groups/{groupId}",
+      "method": "PUT",
+      "path": "/groups/{groupId}",
+      "features": [
+        "groups"
+      ],
+      "write": true,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "groupId": {
+            "type": "string",
+            "description": "The unique identifier of a group",
+            "minLength": 1,
+            "pattern": "^(?!\\.{1,2}$)[^/\\\\%?#\\s]+$"
+          },
+          "body": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Group name identifier"
+              },
+              "peers": {
+                "type": "array",
+                "description": "List of peers ids",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "resources": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "description": "ID of the resource",
+                      "type": "string"
+                    },
+                    "type": {
+                      "allOf": [
+                        {
+                          "description": "Network resource type based of the address",
+                          "type": "string",
+                          "enum": [
+                            "host",
+                            "subnet",
+                            "domain"
+                          ]
+                        },
+                        {
+                          "type": "string",
+                          "enum": [
+                            "peer"
+                          ]
+                        }
+                      ],
+                      "description": "Type of the resource"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "type"
+                  ]
+                }
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "groupId",
+          "body"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_delete_group",
+      "description": "Delete a group. DELETE /api/groups/{groupId}",
+      "method": "DELETE",
+      "path": "/groups/{groupId}",
+      "features": [
+        "groups"
+      ],
+      "write": true,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "groupId": {
+            "type": "string",
+            "description": "The unique identifier of a group",
+            "minLength": 1,
+            "pattern": "^(?!\\.{1,2}$)[^/\\\\%?#\\s]+$"
+          }
+        },
+        "required": [
+          "groupId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_list_policies",
+      "description": "Returns a list of all policies. GET /api/policies",
+      "method": "GET",
+      "path": "/policies",
+      "features": [
+        "policies"
+      ],
+      "write": false,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_create_policy",
+      "description": "Creates a policy. POST /api/policies",
+      "method": "POST",
+      "path": "/policies",
+      "features": [
+        "policies"
+      ],
+      "write": true,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "body": {
+            "allOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "description": "Policy name identifier",
+                    "type": "string"
+                  },
+                  "description": {
+                    "description": "Policy friendly description",
+                    "type": "string"
+                  },
+                  "enabled": {
+                    "description": "Policy status",
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "name",
+                  "enabled"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "source_posture_checks": {
+                    "description": "Posture checks ID's applied to policy source groups",
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "rules": {
+                    "description": "Policy rule object for policy UI editor",
+                    "type": "array",
+                    "items": {
+                      "allOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "name": {
+                              "description": "Policy rule name identifier",
+                              "type": "string"
+                            },
+                            "description": {
+                              "description": "Policy rule friendly description",
+                              "type": "string"
+                            },
+                            "enabled": {
+                              "description": "Policy rule status",
+                              "type": "boolean"
+                            },
+                            "action": {
+                              "description": "Policy rule accept or drops packets",
+                              "type": "string",
+                              "enum": [
+                                "accept",
+                                "drop"
+                              ]
+                            },
+                            "bidirectional": {
+                              "description": "Define if the rule is applicable in both directions, sources, and destinations.",
+                              "type": "boolean"
+                            },
+                            "protocol": {
+                              "description": "Policy rule type of the traffic",
+                              "type": "string",
+                              "enum": [
+                                "all",
+                                "tcp",
+                                "udp",
+                                "icmp",
+                                "netbird-ssh"
+                              ]
+                            },
+                            "ports": {
+                              "description": "Policy rule affected ports. Mutually exclusive with `port_ranges`. A rule accepts either individual ports or port ranges, not both.",
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              }
+                            },
+                            "port_ranges": {
+                              "description": "Policy rule affected ports ranges list. Mutually exclusive with `ports`. To mix individual ports with ranges in one rule, express each single port as a range with identical start and end values (for example, start 443, end 443).",
+                              "type": "array",
+                              "items": {
+                                "description": "Policy rule affected ports range. A range with identical start and end values represents a single port.",
+                                "type": "object",
+                                "properties": {
+                                  "start": {
+                                    "description": "The starting port of the range",
+                                    "type": "integer"
+                                  },
+                                  "end": {
+                                    "description": "The ending port of the range",
+                                    "type": "integer"
+                                  }
+                                },
+                                "required": [
+                                  "start",
+                                  "end"
+                                ]
+                              }
+                            },
+                            "authorized_groups": {
+                              "description": "Map of user group ids to a list of local users",
+                              "type": "object",
+                              "additionalProperties": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                }
+                              }
+                            }
+                          },
+                          "required": [
+                            "name",
+                            "enabled",
+                            "bidirectional",
+                            "protocol",
+                            "action"
+                          ]
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "description": "Policy rule ID",
+                              "type": "string"
+                            },
+                            "sources": {
+                              "description": "Policy rule source group IDs",
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              }
+                            },
+                            "sourceResource": {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "description": "ID of the resource",
+                                  "type": "string"
+                                },
+                                "type": {
+                                  "allOf": [
+                                    {
+                                      "description": "Network resource type based of the address",
+                                      "type": "string",
+                                      "enum": [
+                                        "host",
+                                        "subnet",
+                                        "domain"
+                                      ]
+                                    },
+                                    {
+                                      "type": "string",
+                                      "enum": [
+                                        "peer"
+                                      ]
+                                    }
+                                  ],
+                                  "description": "Type of the resource"
+                                }
+                              },
+                              "required": [
+                                "id",
+                                "type"
+                              ],
+                              "description": "Policy rule source resource that the rule is applied to"
+                            },
+                            "destinations": {
+                              "description": "Policy rule destination group IDs",
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              }
+                            },
+                            "destinationResource": {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "description": "ID of the resource",
+                                  "type": "string"
+                                },
+                                "type": {
+                                  "allOf": [
+                                    {
+                                      "description": "Network resource type based of the address",
+                                      "type": "string",
+                                      "enum": [
+                                        "host",
+                                        "subnet",
+                                        "domain"
+                                      ]
+                                    },
+                                    {
+                                      "type": "string",
+                                      "enum": [
+                                        "peer"
+                                      ]
+                                    }
+                                  ],
+                                  "description": "Type of the resource"
+                                }
+                              },
+                              "required": [
+                                "id",
+                                "type"
+                              ],
+                              "description": "Policy rule destination resource that the rule is applied to"
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                },
+                "required": [
+                  "rules"
+                ]
+              }
+            ]
+          }
+        },
+        "required": [
+          "body"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_get_policy",
+      "description": "Get information about a Policies. GET /api/policies/{policyId}",
+      "method": "GET",
+      "path": "/policies/{policyId}",
+      "features": [
+        "policies"
+      ],
+      "write": false,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "policyId": {
+            "type": "string",
+            "description": "The unique identifier of a policy",
+            "minLength": 1,
+            "pattern": "^(?!\\.{1,2}$)[^/\\\\%?#\\s]+$"
+          }
+        },
+        "required": [
+          "policyId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_update_policy",
+      "description": "Update/Replace a Policy. PUT /api/policies/{policyId}",
+      "method": "PUT",
+      "path": "/policies/{policyId}",
+      "features": [
+        "policies"
+      ],
+      "write": true,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "policyId": {
+            "type": "string",
+            "description": "The unique identifier of a policy",
+            "minLength": 1,
+            "pattern": "^(?!\\.{1,2}$)[^/\\\\%?#\\s]+$"
+          },
+          "body": {
+            "allOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "description": "Policy name identifier",
+                    "type": "string"
+                  },
+                  "description": {
+                    "description": "Policy friendly description",
+                    "type": "string"
+                  },
+                  "enabled": {
+                    "description": "Policy status",
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "name",
+                  "enabled"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "source_posture_checks": {
+                    "description": "Posture checks ID's applied to policy source groups",
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "rules": {
+                    "description": "Policy rule object for policy UI editor",
+                    "type": "array",
+                    "items": {
+                      "allOf": [
+                        {
+                          "type": "object",
+                          "properties": {
+                            "name": {
+                              "description": "Policy rule name identifier",
+                              "type": "string"
+                            },
+                            "description": {
+                              "description": "Policy rule friendly description",
+                              "type": "string"
+                            },
+                            "enabled": {
+                              "description": "Policy rule status",
+                              "type": "boolean"
+                            },
+                            "action": {
+                              "description": "Policy rule accept or drops packets",
+                              "type": "string",
+                              "enum": [
+                                "accept",
+                                "drop"
+                              ]
+                            },
+                            "bidirectional": {
+                              "description": "Define if the rule is applicable in both directions, sources, and destinations.",
+                              "type": "boolean"
+                            },
+                            "protocol": {
+                              "description": "Policy rule type of the traffic",
+                              "type": "string",
+                              "enum": [
+                                "all",
+                                "tcp",
+                                "udp",
+                                "icmp",
+                                "netbird-ssh"
+                              ]
+                            },
+                            "ports": {
+                              "description": "Policy rule affected ports. Mutually exclusive with `port_ranges`. A rule accepts either individual ports or port ranges, not both.",
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              }
+                            },
+                            "port_ranges": {
+                              "description": "Policy rule affected ports ranges list. Mutually exclusive with `ports`. To mix individual ports with ranges in one rule, express each single port as a range with identical start and end values (for example, start 443, end 443).",
+                              "type": "array",
+                              "items": {
+                                "description": "Policy rule affected ports range. A range with identical start and end values represents a single port.",
+                                "type": "object",
+                                "properties": {
+                                  "start": {
+                                    "description": "The starting port of the range",
+                                    "type": "integer"
+                                  },
+                                  "end": {
+                                    "description": "The ending port of the range",
+                                    "type": "integer"
+                                  }
+                                },
+                                "required": [
+                                  "start",
+                                  "end"
+                                ]
+                              }
+                            },
+                            "authorized_groups": {
+                              "description": "Map of user group ids to a list of local users",
+                              "type": "object",
+                              "additionalProperties": {
+                                "type": "array",
+                                "items": {
+                                  "type": "string"
+                                }
+                              }
+                            }
+                          },
+                          "required": [
+                            "name",
+                            "enabled",
+                            "bidirectional",
+                            "protocol",
+                            "action"
+                          ]
+                        },
+                        {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "description": "Policy rule ID",
+                              "type": "string"
+                            },
+                            "sources": {
+                              "description": "Policy rule source group IDs",
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              }
+                            },
+                            "sourceResource": {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "description": "ID of the resource",
+                                  "type": "string"
+                                },
+                                "type": {
+                                  "allOf": [
+                                    {
+                                      "description": "Network resource type based of the address",
+                                      "type": "string",
+                                      "enum": [
+                                        "host",
+                                        "subnet",
+                                        "domain"
+                                      ]
+                                    },
+                                    {
+                                      "type": "string",
+                                      "enum": [
+                                        "peer"
+                                      ]
+                                    }
+                                  ],
+                                  "description": "Type of the resource"
+                                }
+                              },
+                              "required": [
+                                "id",
+                                "type"
+                              ],
+                              "description": "Policy rule source resource that the rule is applied to"
+                            },
+                            "destinations": {
+                              "description": "Policy rule destination group IDs",
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              }
+                            },
+                            "destinationResource": {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "description": "ID of the resource",
+                                  "type": "string"
+                                },
+                                "type": {
+                                  "allOf": [
+                                    {
+                                      "description": "Network resource type based of the address",
+                                      "type": "string",
+                                      "enum": [
+                                        "host",
+                                        "subnet",
+                                        "domain"
+                                      ]
+                                    },
+                                    {
+                                      "type": "string",
+                                      "enum": [
+                                        "peer"
+                                      ]
+                                    }
+                                  ],
+                                  "description": "Type of the resource"
+                                }
+                              },
+                              "required": [
+                                "id",
+                                "type"
+                              ],
+                              "description": "Policy rule destination resource that the rule is applied to"
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                },
+                "required": [
+                  "rules"
+                ]
+              }
+            ]
+          }
+        },
+        "required": [
+          "policyId",
+          "body"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_delete_policy",
+      "description": "Delete a policy. DELETE /api/policies/{policyId}",
+      "method": "DELETE",
+      "path": "/policies/{policyId}",
+      "features": [
+        "policies"
+      ],
+      "write": true,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "policyId": {
+            "type": "string",
+            "description": "The unique identifier of a policy",
+            "minLength": 1,
+            "pattern": "^(?!\\.{1,2}$)[^/\\\\%?#\\s]+$"
+          }
+        },
+        "required": [
+          "policyId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_list_routes",
+      "description": "Returns a list of all routes. GET /api/routes",
+      "method": "GET",
+      "path": "/routes",
+      "features": [
+        "routes"
+      ],
+      "write": false,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_create_route",
+      "description": "Creates a Route. POST /api/routes",
+      "method": "POST",
+      "path": "/routes",
+      "features": [
+        "routes"
+      ],
+      "write": true,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "body": {
+            "type": "object",
+            "properties": {
+              "description": {
+                "description": "Route description",
+                "type": "string"
+              },
+              "network_id": {
+                "description": "Route network identifier, to group HA routes",
+                "type": "string",
+                "maxLength": 40,
+                "minLength": 1
+              },
+              "enabled": {
+                "description": "Route status",
+                "type": "boolean"
+              },
+              "peer": {
+                "description": "Peer Identifier associated with route. This property can not be set together with `peer_groups`",
+                "type": "string"
+              },
+              "peer_groups": {
+                "description": "Peers Group Identifier associated with route. This property can not be set together with `peer`",
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "network": {
+                "description": "Network range in CIDR format, Conflicts with domains",
+                "type": "string"
+              },
+              "domains": {
+                "description": "Domain list to be dynamically resolved. Max of 32 domains can be added per route configuration. Conflicts with network",
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 32
+                }
+              },
+              "metric": {
+                "description": "Route metric number. Lowest number has higher priority",
+                "type": "integer",
+                "maximum": 9999,
+                "minimum": 1
+              },
+              "masquerade": {
+                "description": "Indicate if peer should masquerade traffic to this route's prefix",
+                "type": "boolean"
+              },
+              "groups": {
+                "description": "Group IDs containing routing peers",
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "keep_route": {
+                "description": "Indicate if the route should be kept after a domain doesn't resolve that IP anymore",
+                "type": "boolean"
+              },
+              "access_control_groups": {
+                "description": "Access control group identifier associated with route.",
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "skip_auto_apply": {
+                "description": "Indicate if this exit node route (0.0.0.0/0) should skip auto-application for client routing",
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "id",
+              "description",
+              "network_id",
+              "enabled",
+              "metric",
+              "masquerade",
+              "groups",
+              "keep_route"
+            ]
+          }
+        },
+        "required": [
+          "body"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_get_route",
+      "description": "Get information about a Routes. GET /api/routes/{routeId}",
+      "method": "GET",
+      "path": "/routes/{routeId}",
+      "features": [
+        "routes"
+      ],
+      "write": false,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "routeId": {
+            "type": "string",
+            "description": "The unique identifier of a route",
+            "minLength": 1,
+            "pattern": "^(?!\\.{1,2}$)[^/\\\\%?#\\s]+$"
+          }
+        },
+        "required": [
+          "routeId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_update_route",
+      "description": "Update/Replace a Route. PUT /api/routes/{routeId}",
+      "method": "PUT",
+      "path": "/routes/{routeId}",
+      "features": [
+        "routes"
+      ],
+      "write": true,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "routeId": {
+            "type": "string",
+            "description": "The unique identifier of a route",
+            "minLength": 1,
+            "pattern": "^(?!\\.{1,2}$)[^/\\\\%?#\\s]+$"
+          },
+          "body": {
+            "type": "object",
+            "properties": {
+              "description": {
+                "description": "Route description",
+                "type": "string"
+              },
+              "network_id": {
+                "description": "Route network identifier, to group HA routes",
+                "type": "string",
+                "maxLength": 40,
+                "minLength": 1
+              },
+              "enabled": {
+                "description": "Route status",
+                "type": "boolean"
+              },
+              "peer": {
+                "description": "Peer Identifier associated with route. This property can not be set together with `peer_groups`",
+                "type": "string"
+              },
+              "peer_groups": {
+                "description": "Peers Group Identifier associated with route. This property can not be set together with `peer`",
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "network": {
+                "description": "Network range in CIDR format, Conflicts with domains",
+                "type": "string"
+              },
+              "domains": {
+                "description": "Domain list to be dynamically resolved. Max of 32 domains can be added per route configuration. Conflicts with network",
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 32
+                }
+              },
+              "metric": {
+                "description": "Route metric number. Lowest number has higher priority",
+                "type": "integer",
+                "maximum": 9999,
+                "minimum": 1
+              },
+              "masquerade": {
+                "description": "Indicate if peer should masquerade traffic to this route's prefix",
+                "type": "boolean"
+              },
+              "groups": {
+                "description": "Group IDs containing routing peers",
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "keep_route": {
+                "description": "Indicate if the route should be kept after a domain doesn't resolve that IP anymore",
+                "type": "boolean"
+              },
+              "access_control_groups": {
+                "description": "Access control group identifier associated with route.",
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "skip_auto_apply": {
+                "description": "Indicate if this exit node route (0.0.0.0/0) should skip auto-application for client routing",
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "id",
+              "description",
+              "network_id",
+              "enabled",
+              "metric",
+              "masquerade",
+              "groups",
+              "keep_route"
+            ]
+          }
+        },
+        "required": [
+          "routeId",
+          "body"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_delete_route",
+      "description": "Delete a route. DELETE /api/routes/{routeId}",
+      "method": "DELETE",
+      "path": "/routes/{routeId}",
+      "features": [
+        "routes"
+      ],
+      "write": true,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "routeId": {
+            "type": "string",
+            "description": "The unique identifier of a route",
+            "minLength": 1,
+            "pattern": "^(?!\\.{1,2}$)[^/\\\\%?#\\s]+$"
+          }
+        },
+        "required": [
+          "routeId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_list_networks",
+      "description": "Returns a list of all networks. GET /api/networks",
+      "method": "GET",
+      "path": "/networks",
+      "features": [
+        "networks"
+      ],
+      "write": false,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_create_network",
+      "description": "Creates a Network. POST /api/networks",
+      "method": "POST",
+      "path": "/networks",
+      "features": [
+        "networks"
+      ],
+      "write": true,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "body": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "description": "Network name",
+                "type": "string"
+              },
+              "description": {
+                "description": "Network description",
+                "type": "string"
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "body"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_get_network",
+      "description": "Get information about a Network. GET /api/networks/{networkId}",
+      "method": "GET",
+      "path": "/networks/{networkId}",
+      "features": [
+        "networks"
+      ],
+      "write": false,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "networkId": {
+            "type": "string",
+            "description": "The unique identifier of a network",
+            "minLength": 1,
+            "pattern": "^(?!\\.{1,2}$)[^/\\\\%?#\\s]+$"
+          }
+        },
+        "required": [
+          "networkId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_update_network",
+      "description": "Update/Replace a Network. PUT /api/networks/{networkId}",
+      "method": "PUT",
+      "path": "/networks/{networkId}",
+      "features": [
+        "networks"
+      ],
+      "write": true,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "networkId": {
+            "type": "string",
+            "description": "The unique identifier of a network",
+            "minLength": 1,
+            "pattern": "^(?!\\.{1,2}$)[^/\\\\%?#\\s]+$"
+          },
+          "body": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "description": "Network name",
+                "type": "string"
+              },
+              "description": {
+                "description": "Network description",
+                "type": "string"
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "networkId",
+          "body"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_delete_network",
+      "description": "Delete a network. DELETE /api/networks/{networkId}",
+      "method": "DELETE",
+      "path": "/networks/{networkId}",
+      "features": [
+        "networks"
+      ],
+      "write": true,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "networkId": {
+            "type": "string",
+            "description": "The unique identifier of a network",
+            "minLength": 1,
+            "pattern": "^(?!\\.{1,2}$)[^/\\\\%?#\\s]+$"
+          }
+        },
+        "required": [
+          "networkId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_list_network_resources",
+      "description": "Returns a list of all resources in a network. GET /api/networks/{networkId}/resources",
+      "method": "GET",
+      "path": "/networks/{networkId}/resources",
+      "features": [
+        "networks"
+      ],
+      "write": false,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "networkId": {
+            "type": "string",
+            "description": "The unique identifier of a network",
+            "minLength": 1,
+            "pattern": "^(?!\\.{1,2}$)[^/\\\\%?#\\s]+$"
+          }
+        },
+        "required": [
+          "networkId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_create_network_resource",
+      "description": "Creates a Network Resource. POST /api/networks/{networkId}/resources",
+      "method": "POST",
+      "path": "/networks/{networkId}/resources",
+      "features": [
+        "networks"
+      ],
+      "write": true,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "networkId": {
+            "type": "string",
+            "description": "The unique identifier of a network",
+            "minLength": 1,
+            "pattern": "^(?!\\.{1,2}$)[^/\\\\%?#\\s]+$"
+          },
+          "body": {
+            "allOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "description": "Network resource name",
+                    "type": "string"
+                  },
+                  "description": {
+                    "description": "Network resource description",
+                    "type": "string"
+                  },
+                  "address": {
+                    "description": "Network resource address (either a direct host like 1.1.1.1 or 1.1.1.1/32, or a subnet like 192.168.178.0/24, or domains like example.com and *.example.com)",
+                    "type": "string"
+                  },
+                  "enabled": {
+                    "description": "Network resource status",
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "name",
+                  "address",
+                  "enabled"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "groups": {
+                    "description": "Group IDs containing the resource",
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "required": [
+                  "groups",
+                  "address"
+                ]
+              }
+            ]
+          }
+        },
+        "required": [
+          "networkId",
+          "body"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_get_network_resource",
+      "description": "Get information about a Network Resource. GET /api/networks/{networkId}/resources/{resourceId}",
+      "method": "GET",
+      "path": "/networks/{networkId}/resources/{resourceId}",
+      "features": [
+        "networks"
+      ],
+      "write": false,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "networkId": {
+            "type": "string",
+            "description": "The unique identifier of a network",
+            "minLength": 1,
+            "pattern": "^(?!\\.{1,2}$)[^/\\\\%?#\\s]+$"
+          },
+          "resourceId": {
+            "type": "string",
+            "description": "The unique identifier of a network resource",
+            "minLength": 1,
+            "pattern": "^(?!\\.{1,2}$)[^/\\\\%?#\\s]+$"
+          }
+        },
+        "required": [
+          "networkId",
+          "resourceId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_update_network_resource",
+      "description": "Update a Network Resource. PUT /api/networks/{networkId}/resources/{resourceId}",
+      "method": "PUT",
+      "path": "/networks/{networkId}/resources/{resourceId}",
+      "features": [
+        "networks"
+      ],
+      "write": true,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "networkId": {
+            "type": "string",
+            "description": "The unique identifier of a network",
+            "minLength": 1,
+            "pattern": "^(?!\\.{1,2}$)[^/\\\\%?#\\s]+$"
+          },
+          "resourceId": {
+            "type": "string",
+            "description": "The unique identifier of a resource",
+            "minLength": 1,
+            "pattern": "^(?!\\.{1,2}$)[^/\\\\%?#\\s]+$"
+          },
+          "body": {
+            "allOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "description": "Network resource name",
+                    "type": "string"
+                  },
+                  "description": {
+                    "description": "Network resource description",
+                    "type": "string"
+                  },
+                  "address": {
+                    "description": "Network resource address (either a direct host like 1.1.1.1 or 1.1.1.1/32, or a subnet like 192.168.178.0/24, or domains like example.com and *.example.com)",
+                    "type": "string"
+                  },
+                  "enabled": {
+                    "description": "Network resource status",
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "name",
+                  "address",
+                  "enabled"
+                ]
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "groups": {
+                    "description": "Group IDs containing the resource",
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "required": [
+                  "groups",
+                  "address"
+                ]
+              }
+            ]
+          }
+        },
+        "required": [
+          "networkId",
+          "resourceId",
+          "body"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_delete_network_resource",
+      "description": "Delete a network resource. DELETE /api/networks/{networkId}/resources/{resourceId}",
+      "method": "DELETE",
+      "path": "/networks/{networkId}/resources/{resourceId}",
+      "features": [
+        "networks"
+      ],
+      "write": true,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "networkId": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^(?!\\.{1,2}$)[^/\\\\%?#\\s]+$"
+          },
+          "resourceId": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^(?!\\.{1,2}$)[^/\\\\%?#\\s]+$"
+          }
+        },
+        "required": [
+          "networkId",
+          "resourceId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_list_network_routers",
+      "description": "Returns a list of all routers in a network. GET /api/networks/{networkId}/routers",
+      "method": "GET",
+      "path": "/networks/{networkId}/routers",
+      "features": [
+        "networks"
+      ],
+      "write": false,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "networkId": {
+            "type": "string",
+            "description": "The unique identifier of a network",
+            "minLength": 1,
+            "pattern": "^(?!\\.{1,2}$)[^/\\\\%?#\\s]+$"
+          }
+        },
+        "required": [
+          "networkId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_create_network_router",
+      "description": "Creates a Network Router. POST /api/networks/{networkId}/routers",
+      "method": "POST",
+      "path": "/networks/{networkId}/routers",
+      "features": [
+        "networks"
+      ],
+      "write": true,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "networkId": {
+            "type": "string",
+            "description": "The unique identifier of a network",
+            "minLength": 1,
+            "pattern": "^(?!\\.{1,2}$)[^/\\\\%?#\\s]+$"
+          },
+          "body": {
+            "type": "object",
+            "properties": {
+              "peer": {
+                "description": "Peer Identifier associated with route. This property can not be set together with `peer_groups`",
+                "type": "string"
+              },
+              "peer_groups": {
+                "description": "Peers Group Identifier associated with route. This property can not be set together with `peer`",
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "metric": {
+                "description": "Route metric number. Lowest number has higher priority",
+                "type": "integer",
+                "maximum": 9999,
+                "minimum": 1
+              },
+              "masquerade": {
+                "description": "Indicate if peer should masquerade traffic to this route's prefix",
+                "type": "boolean"
+              },
+              "enabled": {
+                "description": "Network router status",
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "metric",
+              "masquerade",
+              "enabled"
+            ]
+          }
+        },
+        "required": [
+          "networkId",
+          "body"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_get_network_router",
+      "description": "Get information about a Network Router. GET /api/networks/{networkId}/routers/{routerId}",
+      "method": "GET",
+      "path": "/networks/{networkId}/routers/{routerId}",
+      "features": [
+        "networks"
+      ],
+      "write": false,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "networkId": {
+            "type": "string",
+            "description": "The unique identifier of a network",
+            "minLength": 1,
+            "pattern": "^(?!\\.{1,2}$)[^/\\\\%?#\\s]+$"
+          },
+          "routerId": {
+            "type": "string",
+            "description": "The unique identifier of a router",
+            "minLength": 1,
+            "pattern": "^(?!\\.{1,2}$)[^/\\\\%?#\\s]+$"
+          }
+        },
+        "required": [
+          "networkId",
+          "routerId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_update_network_router",
+      "description": "Update a Network Router. PUT /api/networks/{networkId}/routers/{routerId}",
+      "method": "PUT",
+      "path": "/networks/{networkId}/routers/{routerId}",
+      "features": [
+        "networks"
+      ],
+      "write": true,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "networkId": {
+            "type": "string",
+            "description": "The unique identifier of a network",
+            "minLength": 1,
+            "pattern": "^(?!\\.{1,2}$)[^/\\\\%?#\\s]+$"
+          },
+          "routerId": {
+            "type": "string",
+            "description": "The unique identifier of a router",
+            "minLength": 1,
+            "pattern": "^(?!\\.{1,2}$)[^/\\\\%?#\\s]+$"
+          },
+          "body": {
+            "type": "object",
+            "properties": {
+              "peer": {
+                "description": "Peer Identifier associated with route. This property can not be set together with `peer_groups`",
+                "type": "string"
+              },
+              "peer_groups": {
+                "description": "Peers Group Identifier associated with route. This property can not be set together with `peer`",
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "metric": {
+                "description": "Route metric number. Lowest number has higher priority",
+                "type": "integer",
+                "maximum": 9999,
+                "minimum": 1
+              },
+              "masquerade": {
+                "description": "Indicate if peer should masquerade traffic to this route's prefix",
+                "type": "boolean"
+              },
+              "enabled": {
+                "description": "Network router status",
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "metric",
+              "masquerade",
+              "enabled"
+            ]
+          }
+        },
+        "required": [
+          "networkId",
+          "routerId",
+          "body"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_delete_network_router",
+      "description": "Delete a network router. DELETE /api/networks/{networkId}/routers/{routerId}",
+      "method": "DELETE",
+      "path": "/networks/{networkId}/routers/{routerId}",
+      "features": [
+        "networks"
+      ],
+      "write": true,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "networkId": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^(?!\\.{1,2}$)[^/\\\\%?#\\s]+$"
+          },
+          "routerId": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^(?!\\.{1,2}$)[^/\\\\%?#\\s]+$"
+          }
+        },
+        "required": [
+          "networkId",
+          "routerId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_list_dns_nameservers",
+      "description": "Returns a list of all Nameserver Groups. GET /api/dns/nameservers",
+      "method": "GET",
+      "path": "/dns/nameservers",
+      "features": [
+        "dns"
+      ],
+      "write": false,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_create_dns_nameserver",
+      "description": "Creates a Nameserver Group. POST /api/dns/nameservers",
+      "method": "POST",
+      "path": "/dns/nameservers",
+      "features": [
+        "dns"
+      ],
+      "write": true,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "body": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "description": "Name of nameserver group name",
+                "type": "string",
+                "maxLength": 40,
+                "minLength": 1
+              },
+              "description": {
+                "description": "Description of the nameserver group",
+                "type": "string"
+              },
+              "nameservers": {
+                "description": "Nameserver list",
+                "minLength": 1,
+                "maxLength": 3,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "ip": {
+                      "description": "Nameserver IP",
+                      "type": "string"
+                    },
+                    "ns_type": {
+                      "description": "Nameserver Type",
+                      "type": "string",
+                      "enum": [
+                        "udp"
+                      ]
+                    },
+                    "port": {
+                      "description": "Nameserver Port",
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "ip",
+                    "ns_type",
+                    "port"
+                  ]
+                }
+              },
+              "enabled": {
+                "description": "Nameserver group status",
+                "type": "boolean"
+              },
+              "groups": {
+                "description": "Distribution group IDs that defines group of peers that will use this nameserver group",
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "primary": {
+                "description": "Defines if a nameserver group is primary that resolves all domains. It should be true only if domains list is empty.",
+                "type": "boolean"
+              },
+              "domains": {
+                "description": "Match domain list. It should be empty only if primary is true.",
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 255
+                }
+              },
+              "search_domains_enabled": {
+                "description": "Search domain status for match domains. It should be true only if domains list is not empty.",
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "name",
+              "description",
+              "nameservers",
+              "enabled",
+              "groups",
+              "primary",
+              "domains",
+              "search_domains_enabled"
+            ]
+          }
+        },
+        "required": [
+          "body"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_get_dns_nameserver",
+      "description": "Get information about a Nameserver Groups. GET /api/dns/nameservers/{nsgroupId}",
+      "method": "GET",
+      "path": "/dns/nameservers/{nsgroupId}",
+      "features": [
+        "dns"
+      ],
+      "write": false,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "nsgroupId": {
+            "type": "string",
+            "description": "The unique identifier of a Nameserver Group",
+            "minLength": 1,
+            "pattern": "^(?!\\.{1,2}$)[^/\\\\%?#\\s]+$"
+          }
+        },
+        "required": [
+          "nsgroupId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_update_dns_nameserver",
+      "description": "Update/Replace a Nameserver Group. PUT /api/dns/nameservers/{nsgroupId}",
+      "method": "PUT",
+      "path": "/dns/nameservers/{nsgroupId}",
+      "features": [
+        "dns"
+      ],
+      "write": true,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "nsgroupId": {
+            "type": "string",
+            "description": "The unique identifier of a Nameserver Group",
+            "minLength": 1,
+            "pattern": "^(?!\\.{1,2}$)[^/\\\\%?#\\s]+$"
+          },
+          "body": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "description": "Name of nameserver group name",
+                "type": "string",
+                "maxLength": 40,
+                "minLength": 1
+              },
+              "description": {
+                "description": "Description of the nameserver group",
+                "type": "string"
+              },
+              "nameservers": {
+                "description": "Nameserver list",
+                "minLength": 1,
+                "maxLength": 3,
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "ip": {
+                      "description": "Nameserver IP",
+                      "type": "string"
+                    },
+                    "ns_type": {
+                      "description": "Nameserver Type",
+                      "type": "string",
+                      "enum": [
+                        "udp"
+                      ]
+                    },
+                    "port": {
+                      "description": "Nameserver Port",
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "ip",
+                    "ns_type",
+                    "port"
+                  ]
+                }
+              },
+              "enabled": {
+                "description": "Nameserver group status",
+                "type": "boolean"
+              },
+              "groups": {
+                "description": "Distribution group IDs that defines group of peers that will use this nameserver group",
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "primary": {
+                "description": "Defines if a nameserver group is primary that resolves all domains. It should be true only if domains list is empty.",
+                "type": "boolean"
+              },
+              "domains": {
+                "description": "Match domain list. It should be empty only if primary is true.",
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 255
+                }
+              },
+              "search_domains_enabled": {
+                "description": "Search domain status for match domains. It should be true only if domains list is not empty.",
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "name",
+              "description",
+              "nameservers",
+              "enabled",
+              "groups",
+              "primary",
+              "domains",
+              "search_domains_enabled"
+            ]
+          }
+        },
+        "required": [
+          "nsgroupId",
+          "body"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_delete_dns_nameserver",
+      "description": "Delete a Nameserver Group. DELETE /api/dns/nameservers/{nsgroupId}",
+      "method": "DELETE",
+      "path": "/dns/nameservers/{nsgroupId}",
+      "features": [
+        "dns"
+      ],
+      "write": true,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "nsgroupId": {
+            "type": "string",
+            "description": "The unique identifier of a Nameserver Group",
+            "minLength": 1,
+            "pattern": "^(?!\\.{1,2}$)[^/\\\\%?#\\s]+$"
+          }
+        },
+        "required": [
+          "nsgroupId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_list_dns_zones",
+      "description": "Returns a list of all custom DNS zones. GET /api/dns/zones",
+      "method": "GET",
+      "path": "/dns/zones",
+      "features": [
+        "dns"
+      ],
+      "write": false,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_create_dns_zone",
+      "description": "Creates a new custom DNS zone. POST /api/dns/zones",
+      "method": "POST",
+      "path": "/dns/zones",
+      "features": [
+        "dns"
+      ],
+      "write": true,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "body": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "description": "Zone name identifier",
+                "type": "string",
+                "maxLength": 255,
+                "minLength": 1
+              },
+              "domain": {
+                "description": "Zone domain (FQDN)",
+                "type": "string"
+              },
+              "enabled": {
+                "description": "Zone status",
+                "type": "boolean",
+                "default": true
+              },
+              "enable_search_domain": {
+                "description": "Enable this zone as a search domain",
+                "type": "boolean"
+              },
+              "distribution_groups": {
+                "description": "Group IDs that defines groups of peers that will resolve this zone",
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": [
+              "name",
+              "domain",
+              "enable_search_domain",
+              "distribution_groups"
+            ]
+          }
+        },
+        "required": [
+          "body"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_get_dns_zone",
+      "description": "Returns information about a specific DNS zone. GET /api/dns/zones/{zoneId}",
+      "method": "GET",
+      "path": "/dns/zones/{zoneId}",
+      "features": [
+        "dns"
+      ],
+      "write": false,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "zoneId": {
+            "type": "string",
+            "description": "The unique identifier of a zone",
+            "minLength": 1,
+            "pattern": "^(?!\\.{1,2}$)[^/\\\\%?#\\s]+$"
+          }
+        },
+        "required": [
+          "zoneId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_update_dns_zone",
+      "description": "Updates a custom DNS zone. PUT /api/dns/zones/{zoneId}",
+      "method": "PUT",
+      "path": "/dns/zones/{zoneId}",
+      "features": [
+        "dns"
+      ],
+      "write": true,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "zoneId": {
+            "type": "string",
+            "description": "The unique identifier of a zone",
+            "minLength": 1,
+            "pattern": "^(?!\\.{1,2}$)[^/\\\\%?#\\s]+$"
+          },
+          "body": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "description": "Zone name identifier",
+                "type": "string",
+                "maxLength": 255,
+                "minLength": 1
+              },
+              "domain": {
+                "description": "Zone domain (FQDN)",
+                "type": "string"
+              },
+              "enabled": {
+                "description": "Zone status",
+                "type": "boolean",
+                "default": true
+              },
+              "enable_search_domain": {
+                "description": "Enable this zone as a search domain",
+                "type": "boolean"
+              },
+              "distribution_groups": {
+                "description": "Group IDs that defines groups of peers that will resolve this zone",
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": [
+              "name",
+              "domain",
+              "enable_search_domain",
+              "distribution_groups"
+            ]
+          }
+        },
+        "required": [
+          "zoneId",
+          "body"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_delete_dns_zone",
+      "description": "Deletes a custom DNS zone. DELETE /api/dns/zones/{zoneId}",
+      "method": "DELETE",
+      "path": "/dns/zones/{zoneId}",
+      "features": [
+        "dns"
+      ],
+      "write": true,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "zoneId": {
+            "type": "string",
+            "description": "The unique identifier of a zone",
+            "minLength": 1,
+            "pattern": "^(?!\\.{1,2}$)[^/\\\\%?#\\s]+$"
+          }
+        },
+        "required": [
+          "zoneId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_list_dns_records",
+      "description": "Returns a list of all DNS records in a zone. GET /api/dns/zones/{zoneId}/records",
+      "method": "GET",
+      "path": "/dns/zones/{zoneId}/records",
+      "features": [
+        "dns"
+      ],
+      "write": false,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "zoneId": {
+            "type": "string",
+            "description": "The unique identifier of a zone",
+            "minLength": 1,
+            "pattern": "^(?!\\.{1,2}$)[^/\\\\%?#\\s]+$"
+          }
+        },
+        "required": [
+          "zoneId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_create_dns_record",
+      "description": "Creates a new DNS record in a zone. POST /api/dns/zones/{zoneId}/records",
+      "method": "POST",
+      "path": "/dns/zones/{zoneId}/records",
+      "features": [
+        "dns"
+      ],
+      "write": true,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "zoneId": {
+            "type": "string",
+            "description": "The unique identifier of a zone",
+            "minLength": 1,
+            "pattern": "^(?!\\.{1,2}$)[^/\\\\%?#\\s]+$"
+          },
+          "body": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "description": "FQDN for the DNS record. Must be a subdomain within or match the zone's domain.",
+                "type": "string"
+              },
+              "type": {
+                "type": "string",
+                "description": "DNS record type",
+                "enum": [
+                  "A",
+                  "AAAA",
+                  "CNAME"
+                ]
+              },
+              "content": {
+                "description": "DNS record content (IP address for A/AAAA, domain for CNAME)",
+                "type": "string",
+                "maxLength": 255,
+                "minLength": 1
+              },
+              "ttl": {
+                "description": "Time to live in seconds",
+                "type": "integer",
+                "minimum": 0
+              }
+            },
+            "required": [
+              "name",
+              "type",
+              "content",
+              "ttl"
+            ]
+          }
+        },
+        "required": [
+          "zoneId",
+          "body"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_get_dns_record",
+      "description": "Returns information about a specific DNS record. GET /api/dns/zones/{zoneId}/records/{recordId}",
+      "method": "GET",
+      "path": "/dns/zones/{zoneId}/records/{recordId}",
+      "features": [
+        "dns"
+      ],
+      "write": false,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "zoneId": {
+            "type": "string",
+            "description": "The unique identifier of a zone",
+            "minLength": 1,
+            "pattern": "^(?!\\.{1,2}$)[^/\\\\%?#\\s]+$"
+          },
+          "recordId": {
+            "type": "string",
+            "description": "The unique identifier of a DNS record",
+            "minLength": 1,
+            "pattern": "^(?!\\.{1,2}$)[^/\\\\%?#\\s]+$"
+          }
+        },
+        "required": [
+          "zoneId",
+          "recordId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_update_dns_record",
+      "description": "Updates a DNS record in a zone. PUT /api/dns/zones/{zoneId}/records/{recordId}",
+      "method": "PUT",
+      "path": "/dns/zones/{zoneId}/records/{recordId}",
+      "features": [
+        "dns"
+      ],
+      "write": true,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "zoneId": {
+            "type": "string",
+            "description": "The unique identifier of a zone",
+            "minLength": 1,
+            "pattern": "^(?!\\.{1,2}$)[^/\\\\%?#\\s]+$"
+          },
+          "recordId": {
+            "type": "string",
+            "description": "The unique identifier of a DNS record",
+            "minLength": 1,
+            "pattern": "^(?!\\.{1,2}$)[^/\\\\%?#\\s]+$"
+          },
+          "body": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "description": "FQDN for the DNS record. Must be a subdomain within or match the zone's domain.",
+                "type": "string"
+              },
+              "type": {
+                "type": "string",
+                "description": "DNS record type",
+                "enum": [
+                  "A",
+                  "AAAA",
+                  "CNAME"
+                ]
+              },
+              "content": {
+                "description": "DNS record content (IP address for A/AAAA, domain for CNAME)",
+                "type": "string",
+                "maxLength": 255,
+                "minLength": 1
+              },
+              "ttl": {
+                "description": "Time to live in seconds",
+                "type": "integer",
+                "minimum": 0
+              }
+            },
+            "required": [
+              "name",
+              "type",
+              "content",
+              "ttl"
+            ]
+          }
+        },
+        "required": [
+          "zoneId",
+          "recordId",
+          "body"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_delete_dns_record",
+      "description": "Deletes a DNS record from a zone. DELETE /api/dns/zones/{zoneId}/records/{recordId}",
+      "method": "DELETE",
+      "path": "/dns/zones/{zoneId}/records/{recordId}",
+      "features": [
+        "dns"
+      ],
+      "write": true,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "zoneId": {
+            "type": "string",
+            "description": "The unique identifier of a zone",
+            "minLength": 1,
+            "pattern": "^(?!\\.{1,2}$)[^/\\\\%?#\\s]+$"
+          },
+          "recordId": {
+            "type": "string",
+            "description": "The unique identifier of a DNS record",
+            "minLength": 1,
+            "pattern": "^(?!\\.{1,2}$)[^/\\\\%?#\\s]+$"
+          }
+        },
+        "required": [
+          "zoneId",
+          "recordId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_get_dns_settings",
+      "description": "Returns a DNS settings object. GET /api/dns/settings",
+      "method": "GET",
+      "path": "/dns/settings",
+      "features": [
+        "dns"
+      ],
+      "write": false,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_update_dns_settings",
+      "description": "Updates a DNS settings object. PUT /api/dns/settings",
+      "method": "PUT",
+      "path": "/dns/settings",
+      "features": [
+        "dns"
+      ],
+      "write": true,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "body": {
+            "type": "object",
+            "properties": {
+              "disabled_management_groups": {
+                "description": "Groups whose DNS management is disabled",
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": [
+              "disabled_management_groups"
+            ]
+          }
+        },
+        "required": [
+          "body"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_list_setup_keys",
+      "description": "Returns a list of all Setup Keys. GET /api/setup-keys",
+      "method": "GET",
+      "path": "/setup-keys",
+      "features": [
+        "setupKeys"
+      ],
+      "write": false,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_create_setup_key",
+      "description": "Creates a setup key. POST /api/setup-keys",
+      "method": "POST",
+      "path": "/setup-keys",
+      "features": [
+        "setupKeys"
+      ],
+      "write": true,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "body": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "description": "Setup Key name",
+                "type": "string"
+              },
+              "type": {
+                "description": "Setup key type, one-off for single time usage and reusable",
+                "type": "string"
+              },
+              "expires_in": {
+                "description": "Expiration time in seconds",
+                "type": "integer",
+                "minimum": 86400,
+                "maximum": 31536000
+              },
+              "auto_groups": {
+                "description": "List of group IDs to auto-assign to peers registered with this key",
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "usage_limit": {
+                "description": "A number of times this key can be used. The value of 0 indicates the unlimited usage.",
+                "type": "integer"
+              },
+              "ephemeral": {
+                "description": "Indicate that the peer will be ephemeral or not",
+                "type": "boolean"
+              },
+              "allow_extra_dns_labels": {
+                "description": "Allow extra DNS labels to be added to the peer",
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "name",
+              "type",
+              "expires_in",
+              "auto_groups",
+              "usage_limit"
+            ]
+          }
+        },
+        "required": [
+          "body"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_get_setup_key",
+      "description": "Get information about a setup key. GET /api/setup-keys/{keyId}",
+      "method": "GET",
+      "path": "/setup-keys/{keyId}",
+      "features": [
+        "setupKeys"
+      ],
+      "write": false,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "keyId": {
+            "type": "string",
+            "description": "The unique identifier of a setup key",
+            "minLength": 1,
+            "pattern": "^(?!\\.{1,2}$)[^/\\\\%?#\\s]+$"
+          }
+        },
+        "required": [
+          "keyId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_update_setup_key",
+      "description": "Update information about a setup key. PUT /api/setup-keys/{keyId}",
+      "method": "PUT",
+      "path": "/setup-keys/{keyId}",
+      "features": [
+        "setupKeys"
+      ],
+      "write": true,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "keyId": {
+            "type": "string",
+            "description": "The unique identifier of a setup key",
+            "minLength": 1,
+            "pattern": "^(?!\\.{1,2}$)[^/\\\\%?#\\s]+$"
+          },
+          "body": {
+            "type": "object",
+            "properties": {
+              "revoked": {
+                "description": "Setup key revocation status",
+                "type": "boolean"
+              },
+              "auto_groups": {
+                "description": "List of group IDs to auto-assign to peers registered with this key",
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": [
+              "revoked",
+              "auto_groups"
+            ]
+          }
+        },
+        "required": [
+          "keyId",
+          "body"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_delete_setup_key",
+      "description": "Delete a Setup Key. DELETE /api/setup-keys/{keyId}",
+      "method": "DELETE",
+      "path": "/setup-keys/{keyId}",
+      "features": [
+        "setupKeys"
+      ],
+      "write": true,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "keyId": {
+            "type": "string",
+            "description": "The unique identifier of a setup key",
+            "minLength": 1,
+            "pattern": "^(?!\\.{1,2}$)[^/\\\\%?#\\s]+$"
+          }
+        },
+        "required": [
+          "keyId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_list_users",
+      "description": "Returns a list of all users. GET /api/users",
+      "method": "GET",
+      "path": "/users",
+      "features": [
+        "users"
+      ],
+      "write": false,
+      "queryParameters": [
+        {
+          "name": "service_user",
+          "explode": true
+        }
+      ],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "object",
+            "properties": {
+              "service_user": {
+                "type": "boolean",
+                "description": "Filters users and returns either regular users or service users"
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_create_user",
+      "description": "Creates a new service user or sends an invite to a regular user. POST /api/users",
+      "method": "POST",
+      "path": "/users",
+      "features": [
+        "users"
+      ],
+      "write": true,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "body": {
+            "type": "object",
+            "properties": {
+              "email": {
+                "description": "User's Email to send invite to",
+                "type": "string"
+              },
+              "name": {
+                "description": "User's full name",
+                "type": "string"
+              },
+              "role": {
+                "description": "User's NetBird account role",
+                "type": "string"
+              },
+              "auto_groups": {
+                "description": "Group IDs to auto-assign to peers registered by this user",
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "is_service_user": {
+                "description": "Is true if this user is a service user",
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "role",
+              "auto_groups",
+              "is_service_user"
+            ]
+          }
+        },
+        "required": [
+          "body"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_update_user",
+      "description": "Update information about a User. PUT /api/users/{userId}",
+      "method": "PUT",
+      "path": "/users/{userId}",
+      "features": [
+        "users"
+      ],
+      "write": true,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "description": "The unique identifier of a user",
+            "minLength": 1,
+            "pattern": "^(?!\\.{1,2}$)[^/\\\\%?#\\s]+$"
+          },
+          "body": {
+            "type": "object",
+            "properties": {
+              "role": {
+                "description": "User's NetBird account role",
+                "type": "string"
+              },
+              "auto_groups": {
+                "description": "Group IDs to auto-assign to peers registered by this user",
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "is_blocked": {
+                "description": "If set to true then user is blocked and can't use the system",
+                "type": "boolean"
+              }
+            },
+            "required": [
+              "role",
+              "auto_groups",
+              "is_blocked"
+            ]
+          }
+        },
+        "required": [
+          "userId",
+          "body"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_delete_user",
+      "description": "This method removes a user from accessing the system. For this leaves the IDP user intact unless the `--user-delete-from-idp` is passed to management startup.. DELETE /api/users/{userId}",
+      "method": "DELETE",
+      "path": "/users/{userId}",
+      "features": [
+        "users"
+      ],
+      "write": true,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "description": "The unique identifier of a user",
+            "minLength": 1,
+            "pattern": "^(?!\\.{1,2}$)[^/\\\\%?#\\s]+$"
+          }
+        },
+        "required": [
+          "userId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_get_current_user",
+      "description": "Get information about the current user. GET /api/users/current",
+      "method": "GET",
+      "path": "/users/current",
+      "features": [
+        "users"
+      ],
+      "write": false,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_list_accounts",
+      "description": "Returns a list of accounts of a user. Always returns a list of one account.. GET /api/accounts",
+      "method": "GET",
+      "path": "/accounts",
+      "features": [
+        "accounts"
+      ],
+      "write": false,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_update_account",
+      "description": "Update information about an account. PUT /api/accounts/{accountId}",
+      "method": "PUT",
+      "path": "/accounts/{accountId}",
+      "features": [
+        "accounts"
+      ],
+      "write": true,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "description": "The unique identifier of an account",
+            "minLength": 1,
+            "pattern": "^(?!\\.{1,2}$)[^/\\\\%?#\\s]+$"
+          },
+          "body": {
+            "type": "object",
+            "properties": {
+              "settings": {
+                "type": "object",
+                "properties": {
+                  "peer_login_expiration_enabled": {
+                    "description": "Enables or disables peer login expiration globally. After peer's login has expired the user has to log in (authenticate). Applies only to peers that were added by a user (interactive SSO login).",
+                    "type": "boolean"
+                  },
+                  "peer_login_expiration": {
+                    "description": "Period of time after which peer login expires (seconds).",
+                    "type": "integer"
+                  },
+                  "peer_inactivity_expiration_enabled": {
+                    "description": "Enables or disables peer inactivity expiration globally. After peer's session has expired the user has to log in (authenticate). Applies only to peers that were added by a user (interactive SSO login).",
+                    "type": "boolean"
+                  },
+                  "peer_inactivity_expiration": {
+                    "description": "Period of time of inactivity after which peer session expires (seconds).",
+                    "type": "integer"
+                  },
+                  "regular_users_view_blocked": {
+                    "description": "Allows blocking regular users from viewing parts of the system.",
+                    "type": "boolean"
+                  },
+                  "groups_propagation_enabled": {
+                    "description": "Allows propagate the new user auto groups to peers that belongs to the user",
+                    "type": "boolean"
+                  },
+                  "jwt_groups_enabled": {
+                    "description": "Allows extract groups from JWT claim and add it to account groups.",
+                    "type": "boolean"
+                  },
+                  "jwt_groups_claim_name": {
+                    "description": "Name of the claim from which we extract groups names to add it to account groups.",
+                    "type": "string"
+                  },
+                  "jwt_allow_groups": {
+                    "description": "List of groups to which users are allowed access",
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "routing_peer_dns_resolution_enabled": {
+                    "description": "Enables or disables DNS resolution on the routing peers",
+                    "type": "boolean"
+                  },
+                  "dns_domain": {
+                    "description": "Allows to define a custom dns domain for the account",
+                    "type": "string"
+                  },
+                  "network_range": {
+                    "description": "Allows to define a custom network range for the account in CIDR format",
+                    "type": "string",
+                    "format": "cidr"
+                  },
+                  "network_range_v6": {
+                    "description": "Allows to define a custom IPv6 network range for the account in CIDR format.",
+                    "type": "string",
+                    "format": "cidr"
+                  },
+                  "peer_expose_enabled": {
+                    "description": "Enables or disables peer expose. If enabled, peers can expose local services through the reverse proxy using the CLI.",
+                    "type": "boolean"
+                  },
+                  "peer_expose_groups": {
+                    "description": "Limits which peer groups are allowed to expose services. If empty, all peers are allowed when peer expose is enabled.",
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "extra": {
+                    "type": "object",
+                    "properties": {
+                      "peer_approval_enabled": {
+                        "description": "(Cloud only) Enables or disables peer approval globally. If enabled, all peers added will be in pending state until approved by an admin.",
+                        "type": "boolean"
+                      },
+                      "user_approval_required": {
+                        "description": "Enables manual approval for new users joining via domain matching. When enabled, users are blocked with pending approval status until explicitly approved by an admin.",
+                        "type": "boolean"
+                      },
+                      "network_traffic_logs_enabled": {
+                        "description": "Enables or disables network traffic logging. If enabled, all network traffic events from peers will be stored.",
+                        "type": "boolean"
+                      },
+                      "network_traffic_logs_groups": {
+                        "description": "Limits traffic logging to these groups. If unset all peers are enabled.",
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "network_traffic_packet_counter_enabled": {
+                        "description": "Enables or disables network traffic packet counter. If enabled, network packets and their size will be counted and reported. (This can have an slight impact on performance)",
+                        "type": "boolean"
+                      }
+                    },
+                    "required": [
+                      "peer_approval_enabled",
+                      "user_approval_required",
+                      "network_traffic_logs_enabled",
+                      "network_traffic_logs_groups",
+                      "network_traffic_packet_counter_enabled"
+                    ]
+                  },
+                  "lazy_connection_enabled": {
+                    "description": "Enables or disables experimental lazy connection",
+                    "type": "boolean"
+                  },
+                  "auto_update_version": {
+                    "description": "Set Clients auto-update version. \"latest\", \"disabled\", or a specific version (e.g \"0.50.1\")",
+                    "type": "string"
+                  },
+                  "auto_update_always": {
+                    "description": "When true, updates are installed automatically in the background. When false, updates require user interaction from the UI.",
+                    "type": "boolean"
+                  },
+                  "metrics_push_enabled": {
+                    "description": "Enables or disables client metrics push for all peers in the account",
+                    "type": "boolean"
+                  },
+                  "agent_network_only": {
+                    "description": "Limits the dashboard to the Agent Network surface for this account. Set for accounts created via netbird.ai signups and can be disabled later. Enabling this requires dashboard_features.agent_network to be true in the same request.",
+                    "type": "boolean"
+                  },
+                  "dashboard_features": {
+                    "description": "Per-account dashboard section visibility overrides. Omitted keys follow the default dashboard behavior.",
+                    "type": "object",
+                    "properties": {
+                      "agent_network": {
+                        "description": "Controls the Agent Network menu for the account regardless of the deployment feature flag. When true the menu is shown, when false it is hidden, and when omitted the default behavior applies. Must be true when agent_network_only is enabled.",
+                        "type": "boolean"
+                      }
+                    }
+                  },
+                  "embedded_idp_enabled": {
+                    "description": "Indicates whether the embedded identity provider (Dex) is enabled for this account. This is a read-only field.",
+                    "type": "boolean",
+                    "readOnly": true
+                  },
+                  "local_auth_disabled": {
+                    "description": "Indicates whether local (email/password) authentication is disabled. When true, users can only authenticate via external identity providers. This is a read-only field.",
+                    "type": "boolean",
+                    "readOnly": true
+                  },
+                  "local_mfa_enabled": {
+                    "description": "Enables or disables TOTP multi-factor authentication for local users. Only applicable when the embedded identity provider is enabled.",
+                    "type": "boolean"
+                  },
+                  "ipv6_enabled_groups": {
+                    "description": "List of group IDs whose peers receive IPv6 overlay addresses. Peers not in any of these groups will not be allocated an IPv6 address. New accounts default to the All group.",
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "required": [
+                  "peer_login_expiration_enabled",
+                  "peer_login_expiration",
+                  "peer_inactivity_expiration_enabled",
+                  "peer_inactivity_expiration",
+                  "regular_users_view_blocked",
+                  "peer_expose_enabled",
+                  "peer_expose_groups"
+                ]
+              },
+              "onboarding": {
+                "type": "object",
+                "properties": {
+                  "signup_form_pending": {
+                    "description": "Indicates whether the account signup form is pending",
+                    "type": "boolean"
+                  },
+                  "onboarding_flow_pending": {
+                    "description": "Indicates whether the account onboarding flow is pending",
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "signup_form_pending",
+                  "onboarding_flow_pending"
+                ]
+              }
+            },
+            "required": [
+              "settings"
+            ]
+          }
+        },
+        "required": [
+          "accountId",
+          "body"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_delete_account",
+      "description": "Deletes an account and all its resources. Only account owners can delete accounts.. DELETE /api/accounts/{accountId}",
+      "method": "DELETE",
+      "path": "/accounts/{accountId}",
+      "features": [
+        "accounts"
+      ],
+      "write": true,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "description": "The unique identifier of an account",
+            "minLength": 1,
+            "pattern": "^(?!\\.{1,2}$)[^/\\\\%?#\\s]+$"
+          }
+        },
+        "required": [
+          "accountId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_list_posture_checks",
+      "description": "Returns a list of all posture checks. GET /api/posture-checks",
+      "method": "GET",
+      "path": "/posture-checks",
+      "features": [
+        "postureChecks"
+      ],
+      "write": false,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_create_posture_check",
+      "description": "Creates a posture check. POST /api/posture-checks",
+      "method": "POST",
+      "path": "/posture-checks",
+      "features": [
+        "postureChecks"
+      ],
+      "write": true,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "body": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "description": "Posture check name identifier",
+                "type": "string"
+              },
+              "description": {
+                "description": "Posture check friendly description",
+                "type": "string"
+              },
+              "checks": {
+                "description": "List of objects that perform the actual checks",
+                "type": "object",
+                "properties": {
+                  "nb_version_check": {
+                    "description": "Posture check for the version of NetBird",
+                    "type": "object"
+                  },
+                  "os_version_check": {
+                    "description": "Posture check for the version of operating system",
+                    "type": "object",
+                    "properties": {
+                      "android": {
+                        "description": "Minimum version of Android",
+                        "type": "object",
+                        "properties": {
+                          "min_version": {
+                            "description": "Minimum acceptable version",
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "min_version"
+                        ]
+                      },
+                      "darwin": {
+                        "description": "Posture check for the version of operating system",
+                        "type": "object",
+                        "properties": {
+                          "min_version": {
+                            "description": "Minimum acceptable version",
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "min_version"
+                        ]
+                      },
+                      "ios": {
+                        "description": "Minimum version of iOS",
+                        "type": "object",
+                        "properties": {
+                          "min_version": {
+                            "description": "Minimum acceptable version",
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "min_version"
+                        ]
+                      },
+                      "linux": {
+                        "description": "Minimum Linux kernel version",
+                        "type": "object",
+                        "properties": {
+                          "min_kernel_version": {
+                            "description": "Minimum acceptable version",
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "min_kernel_version"
+                        ]
+                      },
+                      "windows": {
+                        "description": "Minimum Windows kernel build version",
+                        "type": "object",
+                        "properties": {
+                          "min_kernel_version": {
+                            "description": "Minimum acceptable version",
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "min_kernel_version"
+                        ]
+                      }
+                    }
+                  },
+                  "geo_location_check": {
+                    "description": "Posture check for geo location",
+                    "type": "object",
+                    "properties": {
+                      "locations": {
+                        "description": "List of geo locations to which the policy applies",
+                        "type": "array",
+                        "items": {
+                          "description": "Describe geographical location information",
+                          "type": "object",
+                          "properties": {
+                            "country_code": {
+                              "description": "2-letter ISO 3166-1 alpha-2 code that represents the country",
+                              "type": "string"
+                            },
+                            "city_name": {
+                              "description": "Commonly used English name of the city",
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "country_code"
+                          ]
+                        }
+                      },
+                      "action": {
+                        "description": "Action to take upon policy match",
+                        "type": "string",
+                        "enum": [
+                          "allow",
+                          "deny"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "locations",
+                      "action"
+                    ]
+                  },
+                  "peer_network_range_check": {
+                    "description": "Posture check for allow or deny access based on the peer's IP addresses. A range matches when it\ncontains any of the peer's local network interface IPs or its public connection (NAT egress) IP,\nso ranges may target private subnets, public CIDRs, or single hosts via a /32 or /128.\n",
+                    "type": "object",
+                    "properties": {
+                      "ranges": {
+                        "description": "List of network ranges in CIDR notation, matched against the peer's local interface IPs and its public connection IP",
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "action": {
+                        "description": "Action to take upon policy match",
+                        "type": "string",
+                        "enum": [
+                          "allow",
+                          "deny"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "ranges",
+                      "action"
+                    ]
+                  },
+                  "process_check": {
+                    "description": "Posture Check for binaries exist and are running in the peer’s system",
+                    "type": "object",
+                    "properties": {
+                      "processes": {
+                        "type": "array",
+                        "items": {
+                          "description": "Describes the operational activity within a peer's system.",
+                          "type": "object",
+                          "properties": {
+                            "linux_path": {
+                              "description": "Path to the process executable file in a Linux operating system",
+                              "type": "string"
+                            },
+                            "mac_path": {
+                              "description": "Path to the process executable file in a Mac operating system",
+                              "type": "string"
+                            },
+                            "windows_path": {
+                              "description": "Path to the process executable file in a Windows operating system",
+                              "type": "string"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "required": [
+                      "processes"
+                    ]
+                  }
+                }
+              }
+            },
+            "required": [
+              "name",
+              "description"
+            ]
+          }
+        },
+        "required": [
+          "body"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_get_posture_check",
+      "description": "Get information about a posture check. GET /api/posture-checks/{postureCheckId}",
+      "method": "GET",
+      "path": "/posture-checks/{postureCheckId}",
+      "features": [
+        "postureChecks"
+      ],
+      "write": false,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "postureCheckId": {
+            "type": "string",
+            "description": "The unique identifier of a posture check",
+            "minLength": 1,
+            "pattern": "^(?!\\.{1,2}$)[^/\\\\%?#\\s]+$"
+          }
+        },
+        "required": [
+          "postureCheckId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_update_posture_check",
+      "description": "Update/Replace a posture check. PUT /api/posture-checks/{postureCheckId}",
+      "method": "PUT",
+      "path": "/posture-checks/{postureCheckId}",
+      "features": [
+        "postureChecks"
+      ],
+      "write": true,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "postureCheckId": {
+            "type": "string",
+            "description": "The unique identifier of a posture check",
+            "minLength": 1,
+            "pattern": "^(?!\\.{1,2}$)[^/\\\\%?#\\s]+$"
+          },
+          "body": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "description": "Posture check name identifier",
+                "type": "string"
+              },
+              "description": {
+                "description": "Posture check friendly description",
+                "type": "string"
+              },
+              "checks": {
+                "description": "List of objects that perform the actual checks",
+                "type": "object",
+                "properties": {
+                  "nb_version_check": {
+                    "description": "Posture check for the version of NetBird",
+                    "type": "object"
+                  },
+                  "os_version_check": {
+                    "description": "Posture check for the version of operating system",
+                    "type": "object",
+                    "properties": {
+                      "android": {
+                        "description": "Minimum version of Android",
+                        "type": "object",
+                        "properties": {
+                          "min_version": {
+                            "description": "Minimum acceptable version",
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "min_version"
+                        ]
+                      },
+                      "darwin": {
+                        "description": "Posture check for the version of operating system",
+                        "type": "object",
+                        "properties": {
+                          "min_version": {
+                            "description": "Minimum acceptable version",
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "min_version"
+                        ]
+                      },
+                      "ios": {
+                        "description": "Minimum version of iOS",
+                        "type": "object",
+                        "properties": {
+                          "min_version": {
+                            "description": "Minimum acceptable version",
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "min_version"
+                        ]
+                      },
+                      "linux": {
+                        "description": "Minimum Linux kernel version",
+                        "type": "object",
+                        "properties": {
+                          "min_kernel_version": {
+                            "description": "Minimum acceptable version",
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "min_kernel_version"
+                        ]
+                      },
+                      "windows": {
+                        "description": "Minimum Windows kernel build version",
+                        "type": "object",
+                        "properties": {
+                          "min_kernel_version": {
+                            "description": "Minimum acceptable version",
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "min_kernel_version"
+                        ]
+                      }
+                    }
+                  },
+                  "geo_location_check": {
+                    "description": "Posture check for geo location",
+                    "type": "object",
+                    "properties": {
+                      "locations": {
+                        "description": "List of geo locations to which the policy applies",
+                        "type": "array",
+                        "items": {
+                          "description": "Describe geographical location information",
+                          "type": "object",
+                          "properties": {
+                            "country_code": {
+                              "description": "2-letter ISO 3166-1 alpha-2 code that represents the country",
+                              "type": "string"
+                            },
+                            "city_name": {
+                              "description": "Commonly used English name of the city",
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "country_code"
+                          ]
+                        }
+                      },
+                      "action": {
+                        "description": "Action to take upon policy match",
+                        "type": "string",
+                        "enum": [
+                          "allow",
+                          "deny"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "locations",
+                      "action"
+                    ]
+                  },
+                  "peer_network_range_check": {
+                    "description": "Posture check for allow or deny access based on the peer's IP addresses. A range matches when it\ncontains any of the peer's local network interface IPs or its public connection (NAT egress) IP,\nso ranges may target private subnets, public CIDRs, or single hosts via a /32 or /128.\n",
+                    "type": "object",
+                    "properties": {
+                      "ranges": {
+                        "description": "List of network ranges in CIDR notation, matched against the peer's local interface IPs and its public connection IP",
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      },
+                      "action": {
+                        "description": "Action to take upon policy match",
+                        "type": "string",
+                        "enum": [
+                          "allow",
+                          "deny"
+                        ]
+                      }
+                    },
+                    "required": [
+                      "ranges",
+                      "action"
+                    ]
+                  },
+                  "process_check": {
+                    "description": "Posture Check for binaries exist and are running in the peer’s system",
+                    "type": "object",
+                    "properties": {
+                      "processes": {
+                        "type": "array",
+                        "items": {
+                          "description": "Describes the operational activity within a peer's system.",
+                          "type": "object",
+                          "properties": {
+                            "linux_path": {
+                              "description": "Path to the process executable file in a Linux operating system",
+                              "type": "string"
+                            },
+                            "mac_path": {
+                              "description": "Path to the process executable file in a Mac operating system",
+                              "type": "string"
+                            },
+                            "windows_path": {
+                              "description": "Path to the process executable file in a Windows operating system",
+                              "type": "string"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "required": [
+                      "processes"
+                    ]
+                  }
+                }
+              }
+            },
+            "required": [
+              "name",
+              "description"
+            ]
+          }
+        },
+        "required": [
+          "postureCheckId",
+          "body"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_delete_posture_check",
+      "description": "Delete a posture check. DELETE /api/posture-checks/{postureCheckId}",
+      "method": "DELETE",
+      "path": "/posture-checks/{postureCheckId}",
+      "features": [
+        "postureChecks"
+      ],
+      "write": true,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "postureCheckId": {
+            "type": "string",
+            "description": "The unique identifier of a posture check",
+            "minLength": 1,
+            "pattern": "^(?!\\.{1,2}$)[^/\\\\%?#\\s]+$"
+          }
+        },
+        "required": [
+          "postureCheckId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_list_audit_events",
+      "description": "Returns a list of all audit events. GET /api/events/audit",
+      "method": "GET",
+      "path": "/events/audit",
+      "features": [
+        "events"
+      ],
+      "write": false,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_list_traffic_events",
+      "description": "Returns a list of all network traffic events. GET /api/events/network-traffic",
+      "method": "GET",
+      "path": "/events/network-traffic",
+      "features": [
+        "events"
+      ],
+      "write": false,
+      "queryParameters": [
+        {
+          "name": "page",
+          "explode": true
+        },
+        {
+          "name": "page_size",
+          "explode": true
+        },
+        {
+          "name": "user_id",
+          "explode": true
+        },
+        {
+          "name": "reporter_id",
+          "explode": true
+        },
+        {
+          "name": "source_id",
+          "explode": true
+        },
+        {
+          "name": "destination_id",
+          "explode": true
+        },
+        {
+          "name": "protocol",
+          "explode": true
+        },
+        {
+          "name": "type",
+          "explode": true
+        },
+        {
+          "name": "connection_type",
+          "explode": true
+        },
+        {
+          "name": "direction",
+          "explode": true
+        },
+        {
+          "name": "search",
+          "explode": true
+        },
+        {
+          "name": "start_date",
+          "explode": true
+        },
+        {
+          "name": "end_date",
+          "explode": true
+        }
+      ],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "object",
+            "properties": {
+              "page": {
+                "type": "integer",
+                "minimum": 1,
+                "default": 1,
+                "description": "Page number"
+              },
+              "page_size": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 50000,
+                "default": 1000,
+                "description": "Number of items per page"
+              },
+              "user_id": {
+                "type": "string",
+                "description": "Filter by user ID"
+              },
+              "reporter_id": {
+                "type": "string",
+                "description": "Filter by reporter ID"
+              },
+              "source_id": {
+                "type": "string",
+                "description": "Filter by source endpoint ID"
+              },
+              "destination_id": {
+                "type": "string",
+                "description": "Filter by destination endpoint ID"
+              },
+              "protocol": {
+                "type": "integer",
+                "description": "Filter by protocol"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "TYPE_UNKNOWN",
+                  "TYPE_START",
+                  "TYPE_END",
+                  "TYPE_DROP"
+                ],
+                "description": "Filter by event type"
+              },
+              "connection_type": {
+                "type": "string",
+                "enum": [
+                  "P2P",
+                  "ROUTED"
+                ],
+                "description": "Filter by connection type"
+              },
+              "direction": {
+                "type": "string",
+                "enum": [
+                  "INGRESS",
+                  "EGRESS",
+                  "DIRECTION_UNKNOWN"
+                ],
+                "description": "Filter by direction"
+              },
+              "search": {
+                "type": "string",
+                "description": "Case-insensitive partial match on user email, source/destination names, and source/destination addresses"
+              },
+              "start_date": {
+                "type": "string",
+                "format": "date-time",
+                "description": "Start date for filtering events (ISO 8601 format, e.g., 2024-01-01T00:00:00Z)."
+              },
+              "end_date": {
+                "type": "string",
+                "format": "date-time",
+                "description": "End date for filtering events (ISO 8601 format, e.g., 2024-01-31T23:59:59Z)."
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_list_reverse_proxy_events",
+      "description": "Returns a paginated list of all reverse proxy access log entries. GET /api/events/proxy",
+      "method": "GET",
+      "path": "/events/proxy",
+      "features": [
+        "reverseProxy",
+        "events"
+      ],
+      "write": false,
+      "queryParameters": [
+        {
+          "name": "page",
+          "explode": true
+        },
+        {
+          "name": "page_size",
+          "explode": true
+        },
+        {
+          "name": "sort_by",
+          "explode": true
+        },
+        {
+          "name": "sort_order",
+          "explode": true
+        },
+        {
+          "name": "search",
+          "explode": true
+        },
+        {
+          "name": "source_ip",
+          "explode": true
+        },
+        {
+          "name": "host",
+          "explode": true
+        },
+        {
+          "name": "path",
+          "explode": true
+        },
+        {
+          "name": "user_id",
+          "explode": true
+        },
+        {
+          "name": "user_email",
+          "explode": true
+        },
+        {
+          "name": "user_name",
+          "explode": true
+        },
+        {
+          "name": "method",
+          "explode": true
+        },
+        {
+          "name": "status",
+          "explode": true
+        },
+        {
+          "name": "status_code",
+          "explode": true
+        },
+        {
+          "name": "start_date",
+          "explode": true
+        },
+        {
+          "name": "end_date",
+          "explode": true
+        }
+      ],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "object",
+            "properties": {
+              "page": {
+                "type": "integer",
+                "default": 1,
+                "minimum": 1,
+                "description": "Page number for pagination (1-indexed)"
+              },
+              "page_size": {
+                "type": "integer",
+                "default": 50,
+                "minimum": 1,
+                "maximum": 100,
+                "description": "Number of items per page (max 100)"
+              },
+              "sort_by": {
+                "type": "string",
+                "enum": [
+                  "timestamp",
+                  "url",
+                  "host",
+                  "path",
+                  "method",
+                  "status_code",
+                  "duration",
+                  "source_ip",
+                  "user_id",
+                  "auth_method",
+                  "reason"
+                ],
+                "default": "timestamp",
+                "description": "Field to sort by (url sorts by host then path)"
+              },
+              "sort_order": {
+                "type": "string",
+                "enum": [
+                  "asc",
+                  "desc"
+                ],
+                "default": "desc",
+                "description": "Sort order (ascending or descending)"
+              },
+              "search": {
+                "type": "string",
+                "description": "General search across request ID, host, path, source IP, user email, and user name"
+              },
+              "source_ip": {
+                "type": "string",
+                "description": "Filter by source IP address"
+              },
+              "host": {
+                "type": "string",
+                "description": "Filter by host header"
+              },
+              "path": {
+                "type": "string",
+                "description": "Filter by request path (supports partial matching)"
+              },
+              "user_id": {
+                "type": "string",
+                "description": "Filter by authenticated user ID"
+              },
+              "user_email": {
+                "type": "string",
+                "description": "Filter by user email (partial matching)"
+              },
+              "user_name": {
+                "type": "string",
+                "description": "Filter by user name (partial matching)"
+              },
+              "method": {
+                "type": "string",
+                "enum": [
+                  "GET",
+                  "POST",
+                  "PUT",
+                  "PATCH",
+                  "DELETE",
+                  "HEAD",
+                  "OPTIONS"
+                ],
+                "description": "Filter by HTTP method"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "success",
+                  "failed"
+                ],
+                "description": "Filter by status (success = 2xx/3xx, failed = 1xx/4xx/5xx)"
+              },
+              "status_code": {
+                "type": "integer",
+                "minimum": 100,
+                "maximum": 599,
+                "description": "Filter by HTTP status code"
+              },
+              "start_date": {
+                "type": "string",
+                "format": "date-time",
+                "description": "Filter by timestamp >= start_date (RFC3339 format)"
+              },
+              "end_date": {
+                "type": "string",
+                "format": "date-time",
+                "description": "Filter by timestamp <= end_date (RFC3339 format)"
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          }
+        },
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_list_reverse_proxy_services",
+      "description": "Returns a list of all reverse proxy services. GET /api/reverse-proxies/services",
+      "method": "GET",
+      "path": "/reverse-proxies/services",
+      "features": [
+        "reverseProxy"
+      ],
+      "write": false,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_create_reverse_proxy_service",
+      "description": "Creates a new reverse proxy service. POST /api/reverse-proxies/services",
+      "method": "POST",
+      "path": "/reverse-proxies/services",
+      "features": [
+        "reverseProxy"
+      ],
+      "write": true,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "body": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Service name"
+              },
+              "domain": {
+                "type": "string",
+                "description": "Domain for the service"
+              },
+              "mode": {
+                "type": "string",
+                "description": "Service mode. \"http\" for L7 reverse proxy, \"tcp\"/\"udp\"/\"tls\" for L4 passthrough.",
+                "enum": [
+                  "http",
+                  "tcp",
+                  "udp",
+                  "tls"
+                ],
+                "default": "http"
+              },
+              "listen_port": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 65535,
+                "description": "Port the proxy listens on (L4/TLS only). Set to 0 for auto-assignment."
+              },
+              "targets": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "target_id": {
+                      "type": "string",
+                      "description": "Target ID"
+                    },
+                    "target_type": {
+                      "type": "string",
+                      "description": "Target type",
+                      "enum": [
+                        "peer",
+                        "host",
+                        "domain",
+                        "subnet",
+                        "cluster"
+                      ]
+                    },
+                    "path": {
+                      "type": "string",
+                      "description": "URL path prefix for this target (HTTP only)"
+                    },
+                    "protocol": {
+                      "type": "string",
+                      "description": "Protocol to use when connecting to the backend",
+                      "enum": [
+                        "http",
+                        "https",
+                        "tcp",
+                        "udp"
+                      ]
+                    },
+                    "host": {
+                      "type": "string",
+                      "description": "Backend ip or domain for this target"
+                    },
+                    "port": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 65535,
+                      "description": "Backend port for this target"
+                    },
+                    "enabled": {
+                      "type": "boolean",
+                      "description": "Whether this target is enabled"
+                    },
+                    "options": {
+                      "type": "object",
+                      "properties": {
+                        "skip_tls_verify": {
+                          "type": "boolean",
+                          "description": "Skip TLS certificate verification for this backend"
+                        },
+                        "request_timeout": {
+                          "type": "string",
+                          "description": "Per-target response timeout as a Go duration string (e.g. \"30s\", \"2m\")"
+                        },
+                        "path_rewrite": {
+                          "type": "string",
+                          "description": "Controls how the request path is rewritten before forwarding to the backend. Default strips the matched prefix. \"preserve\" keeps the full original request path.",
+                          "enum": [
+                            "preserve"
+                          ]
+                        },
+                        "custom_headers": {
+                          "type": "object",
+                          "description": "Extra headers sent to the backend. Hop-by-hop and proxy-managed headers (Host, Connection, Transfer-Encoding, etc.) are rejected.",
+                          "propertyNames": {
+                            "type": "string",
+                            "pattern": "^[!#$%&'*+.^_`|~0-9A-Za-z-]+$"
+                          },
+                          "additionalProperties": {
+                            "type": "string",
+                            "pattern": "^[^\\r\\n]*$"
+                          }
+                        },
+                        "proxy_protocol": {
+                          "type": "boolean",
+                          "description": "Send PROXY Protocol v2 header to this backend (TCP/TLS only)"
+                        },
+                        "session_idle_timeout": {
+                          "type": "string",
+                          "description": "Idle timeout before a UDP session is reaped, as a Go duration string (e.g. \"30s\", \"2m\")."
+                        },
+                        "direct_upstream": {
+                          "type": "boolean",
+                          "description": "When true, the proxy dials this target via the host's network stack\ninstead of through its embedded NetBird client. Use for upstreams\nreachable without WireGuard (public APIs, LAN services, localhost\nsidecars).\n",
+                          "default": false
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "target_id",
+                    "target_type",
+                    "protocol",
+                    "port",
+                    "enabled"
+                  ]
+                },
+                "description": "List of target backends for this service"
+              },
+              "enabled": {
+                "type": "boolean",
+                "description": "Whether the service is enabled",
+                "default": true
+              },
+              "pass_host_header": {
+                "type": "boolean",
+                "description": "When true, the original client Host header is passed through to the backend instead of being rewritten to the backend's address"
+              },
+              "rewrite_redirects": {
+                "type": "boolean",
+                "description": "When true, Location headers in backend responses are rewritten to replace the backend address with the public-facing domain"
+              },
+              "auth": {
+                "type": "object",
+                "properties": {
+                  "password_auth": {
+                    "type": "object",
+                    "properties": {
+                      "enabled": {
+                        "type": "boolean",
+                        "description": "Whether password auth is enabled"
+                      },
+                      "password": {
+                        "type": "string",
+                        "description": "Auth password"
+                      }
+                    },
+                    "required": [
+                      "enabled",
+                      "password"
+                    ]
+                  },
+                  "pin_auth": {
+                    "type": "object",
+                    "properties": {
+                      "enabled": {
+                        "type": "boolean",
+                        "description": "Whether PIN auth is enabled"
+                      },
+                      "pin": {
+                        "type": "string",
+                        "description": "PIN value"
+                      }
+                    },
+                    "required": [
+                      "enabled",
+                      "pin"
+                    ]
+                  },
+                  "bearer_auth": {
+                    "type": "object",
+                    "properties": {
+                      "enabled": {
+                        "type": "boolean",
+                        "description": "Whether bearer auth is enabled"
+                      },
+                      "distribution_groups": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "description": "List of group IDs that can use bearer auth"
+                      }
+                    },
+                    "required": [
+                      "enabled"
+                    ]
+                  },
+                  "link_auth": {
+                    "type": "object",
+                    "properties": {
+                      "enabled": {
+                        "type": "boolean",
+                        "description": "Whether link auth is enabled"
+                      }
+                    },
+                    "required": [
+                      "enabled"
+                    ]
+                  },
+                  "header_auths": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "description": "Static header-value authentication. The proxy checks that the named header matches the configured value.",
+                      "properties": {
+                        "enabled": {
+                          "type": "boolean",
+                          "description": "Whether header auth is enabled"
+                        },
+                        "header": {
+                          "type": "string",
+                          "description": "HTTP header name to check (e.g. \"Authorization\", \"X-API-Key\")"
+                        },
+                        "value": {
+                          "type": "string",
+                          "description": "Expected header value. For Basic auth use \"Basic base64(user:pass)\". For Bearer use \"Bearer token\". Cleared in responses."
+                        }
+                      },
+                      "required": [
+                        "enabled",
+                        "header",
+                        "value"
+                      ]
+                    }
+                  }
+                }
+              },
+              "access_restrictions": {
+                "type": "object",
+                "description": "Connection-level access restrictions based on IP address or geography. Applies to both HTTP and L4 services.",
+                "properties": {
+                  "allowed_cidrs": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "cidr"
+                    },
+                    "description": "CIDR allowlist. If non-empty, only IPs matching these CIDRs are allowed."
+                  },
+                  "blocked_cidrs": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "cidr"
+                    },
+                    "description": "CIDR blocklist. Connections from these CIDRs are rejected. Evaluated after allowed_cidrs."
+                  },
+                  "allowed_countries": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "pattern": "^[a-zA-Z]{2}$"
+                    },
+                    "description": "ISO 3166-1 alpha-2 country codes to allow. If non-empty, only these countries are permitted."
+                  },
+                  "blocked_countries": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "pattern": "^[a-zA-Z]{2}$"
+                    },
+                    "description": "ISO 3166-1 alpha-2 country codes to block."
+                  },
+                  "crowdsec_mode": {
+                    "type": "string",
+                    "enum": [
+                      "off",
+                      "enforce",
+                      "observe"
+                    ],
+                    "default": "off",
+                    "description": "CrowdSec IP reputation mode. Only available when the proxy cluster supports CrowdSec."
+                  }
+                }
+              },
+              "private": {
+                "type": "boolean",
+                "description": "When true, the service is NetBird-only — its target points at a proxy cluster, inbound peers authenticate via their WireGuard tunnel identity (no OIDC), and an ACL policy is auto-generated from access_groups to the cluster's proxy-peer group. Requires mode=http.",
+                "default": false
+              },
+              "access_groups": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "NetBird group IDs whose peers may reach this private service over the tunnel. Required when private=true; ignored otherwise. Mutually exclusive with bearer auth (SSO)."
+              }
+            },
+            "required": [
+              "name",
+              "domain",
+              "enabled"
+            ]
+          }
+        },
+        "required": [
+          "body"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_get_reverse_proxy_service",
+      "description": "Get information about a specific reverse proxy service. GET /api/reverse-proxies/services/{serviceId}",
+      "method": "GET",
+      "path": "/reverse-proxies/services/{serviceId}",
+      "features": [
+        "reverseProxy"
+      ],
+      "write": false,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "serviceId": {
+            "type": "string",
+            "description": "The unique identifier of a service",
+            "minLength": 1,
+            "pattern": "^(?!\\.{1,2}$)[^/\\\\%?#\\s]+$"
+          }
+        },
+        "required": [
+          "serviceId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_update_reverse_proxy_service",
+      "description": "Update an existing service. PUT /api/reverse-proxies/services/{serviceId}",
+      "method": "PUT",
+      "path": "/reverse-proxies/services/{serviceId}",
+      "features": [
+        "reverseProxy"
+      ],
+      "write": true,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "serviceId": {
+            "type": "string",
+            "description": "The unique identifier of a service",
+            "minLength": 1,
+            "pattern": "^(?!\\.{1,2}$)[^/\\\\%?#\\s]+$"
+          },
+          "body": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Service name"
+              },
+              "domain": {
+                "type": "string",
+                "description": "Domain for the service"
+              },
+              "mode": {
+                "type": "string",
+                "description": "Service mode. \"http\" for L7 reverse proxy, \"tcp\"/\"udp\"/\"tls\" for L4 passthrough.",
+                "enum": [
+                  "http",
+                  "tcp",
+                  "udp",
+                  "tls"
+                ],
+                "default": "http"
+              },
+              "listen_port": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 65535,
+                "description": "Port the proxy listens on (L4/TLS only). Set to 0 for auto-assignment."
+              },
+              "targets": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "target_id": {
+                      "type": "string",
+                      "description": "Target ID"
+                    },
+                    "target_type": {
+                      "type": "string",
+                      "description": "Target type",
+                      "enum": [
+                        "peer",
+                        "host",
+                        "domain",
+                        "subnet",
+                        "cluster"
+                      ]
+                    },
+                    "path": {
+                      "type": "string",
+                      "description": "URL path prefix for this target (HTTP only)"
+                    },
+                    "protocol": {
+                      "type": "string",
+                      "description": "Protocol to use when connecting to the backend",
+                      "enum": [
+                        "http",
+                        "https",
+                        "tcp",
+                        "udp"
+                      ]
+                    },
+                    "host": {
+                      "type": "string",
+                      "description": "Backend ip or domain for this target"
+                    },
+                    "port": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "maximum": 65535,
+                      "description": "Backend port for this target"
+                    },
+                    "enabled": {
+                      "type": "boolean",
+                      "description": "Whether this target is enabled"
+                    },
+                    "options": {
+                      "type": "object",
+                      "properties": {
+                        "skip_tls_verify": {
+                          "type": "boolean",
+                          "description": "Skip TLS certificate verification for this backend"
+                        },
+                        "request_timeout": {
+                          "type": "string",
+                          "description": "Per-target response timeout as a Go duration string (e.g. \"30s\", \"2m\")"
+                        },
+                        "path_rewrite": {
+                          "type": "string",
+                          "description": "Controls how the request path is rewritten before forwarding to the backend. Default strips the matched prefix. \"preserve\" keeps the full original request path.",
+                          "enum": [
+                            "preserve"
+                          ]
+                        },
+                        "custom_headers": {
+                          "type": "object",
+                          "description": "Extra headers sent to the backend. Hop-by-hop and proxy-managed headers (Host, Connection, Transfer-Encoding, etc.) are rejected.",
+                          "propertyNames": {
+                            "type": "string",
+                            "pattern": "^[!#$%&'*+.^_`|~0-9A-Za-z-]+$"
+                          },
+                          "additionalProperties": {
+                            "type": "string",
+                            "pattern": "^[^\\r\\n]*$"
+                          }
+                        },
+                        "proxy_protocol": {
+                          "type": "boolean",
+                          "description": "Send PROXY Protocol v2 header to this backend (TCP/TLS only)"
+                        },
+                        "session_idle_timeout": {
+                          "type": "string",
+                          "description": "Idle timeout before a UDP session is reaped, as a Go duration string (e.g. \"30s\", \"2m\")."
+                        },
+                        "direct_upstream": {
+                          "type": "boolean",
+                          "description": "When true, the proxy dials this target via the host's network stack\ninstead of through its embedded NetBird client. Use for upstreams\nreachable without WireGuard (public APIs, LAN services, localhost\nsidecars).\n",
+                          "default": false
+                        }
+                      }
+                    }
+                  },
+                  "required": [
+                    "target_id",
+                    "target_type",
+                    "protocol",
+                    "port",
+                    "enabled"
+                  ]
+                },
+                "description": "List of target backends for this service"
+              },
+              "enabled": {
+                "type": "boolean",
+                "description": "Whether the service is enabled",
+                "default": true
+              },
+              "pass_host_header": {
+                "type": "boolean",
+                "description": "When true, the original client Host header is passed through to the backend instead of being rewritten to the backend's address"
+              },
+              "rewrite_redirects": {
+                "type": "boolean",
+                "description": "When true, Location headers in backend responses are rewritten to replace the backend address with the public-facing domain"
+              },
+              "auth": {
+                "type": "object",
+                "properties": {
+                  "password_auth": {
+                    "type": "object",
+                    "properties": {
+                      "enabled": {
+                        "type": "boolean",
+                        "description": "Whether password auth is enabled"
+                      },
+                      "password": {
+                        "type": "string",
+                        "description": "Auth password"
+                      }
+                    },
+                    "required": [
+                      "enabled",
+                      "password"
+                    ]
+                  },
+                  "pin_auth": {
+                    "type": "object",
+                    "properties": {
+                      "enabled": {
+                        "type": "boolean",
+                        "description": "Whether PIN auth is enabled"
+                      },
+                      "pin": {
+                        "type": "string",
+                        "description": "PIN value"
+                      }
+                    },
+                    "required": [
+                      "enabled",
+                      "pin"
+                    ]
+                  },
+                  "bearer_auth": {
+                    "type": "object",
+                    "properties": {
+                      "enabled": {
+                        "type": "boolean",
+                        "description": "Whether bearer auth is enabled"
+                      },
+                      "distribution_groups": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "description": "List of group IDs that can use bearer auth"
+                      }
+                    },
+                    "required": [
+                      "enabled"
+                    ]
+                  },
+                  "link_auth": {
+                    "type": "object",
+                    "properties": {
+                      "enabled": {
+                        "type": "boolean",
+                        "description": "Whether link auth is enabled"
+                      }
+                    },
+                    "required": [
+                      "enabled"
+                    ]
+                  },
+                  "header_auths": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "description": "Static header-value authentication. The proxy checks that the named header matches the configured value.",
+                      "properties": {
+                        "enabled": {
+                          "type": "boolean",
+                          "description": "Whether header auth is enabled"
+                        },
+                        "header": {
+                          "type": "string",
+                          "description": "HTTP header name to check (e.g. \"Authorization\", \"X-API-Key\")"
+                        },
+                        "value": {
+                          "type": "string",
+                          "description": "Expected header value. For Basic auth use \"Basic base64(user:pass)\". For Bearer use \"Bearer token\". Cleared in responses."
+                        }
+                      },
+                      "required": [
+                        "enabled",
+                        "header",
+                        "value"
+                      ]
+                    }
+                  }
+                }
+              },
+              "access_restrictions": {
+                "type": "object",
+                "description": "Connection-level access restrictions based on IP address or geography. Applies to both HTTP and L4 services.",
+                "properties": {
+                  "allowed_cidrs": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "cidr"
+                    },
+                    "description": "CIDR allowlist. If non-empty, only IPs matching these CIDRs are allowed."
+                  },
+                  "blocked_cidrs": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "format": "cidr"
+                    },
+                    "description": "CIDR blocklist. Connections from these CIDRs are rejected. Evaluated after allowed_cidrs."
+                  },
+                  "allowed_countries": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "pattern": "^[a-zA-Z]{2}$"
+                    },
+                    "description": "ISO 3166-1 alpha-2 country codes to allow. If non-empty, only these countries are permitted."
+                  },
+                  "blocked_countries": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "pattern": "^[a-zA-Z]{2}$"
+                    },
+                    "description": "ISO 3166-1 alpha-2 country codes to block."
+                  },
+                  "crowdsec_mode": {
+                    "type": "string",
+                    "enum": [
+                      "off",
+                      "enforce",
+                      "observe"
+                    ],
+                    "default": "off",
+                    "description": "CrowdSec IP reputation mode. Only available when the proxy cluster supports CrowdSec."
+                  }
+                }
+              },
+              "private": {
+                "type": "boolean",
+                "description": "When true, the service is NetBird-only — its target points at a proxy cluster, inbound peers authenticate via their WireGuard tunnel identity (no OIDC), and an ACL policy is auto-generated from access_groups to the cluster's proxy-peer group. Requires mode=http.",
+                "default": false
+              },
+              "access_groups": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "NetBird group IDs whose peers may reach this private service over the tunnel. Required when private=true; ignored otherwise. Mutually exclusive with bearer auth (SSO)."
+              }
+            },
+            "required": [
+              "name",
+              "domain",
+              "enabled"
+            ]
+          }
+        },
+        "required": [
+          "serviceId",
+          "body"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_delete_reverse_proxy_service",
+      "description": "Delete an existing service. DELETE /api/reverse-proxies/services/{serviceId}",
+      "method": "DELETE",
+      "path": "/reverse-proxies/services/{serviceId}",
+      "features": [
+        "reverseProxy"
+      ],
+      "write": true,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "serviceId": {
+            "type": "string",
+            "description": "The unique identifier of a service",
+            "minLength": 1,
+            "pattern": "^(?!\\.{1,2}$)[^/\\\\%?#\\s]+$"
+          }
+        },
+        "required": [
+          "serviceId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_list_reverse_proxy_domains",
+      "description": "Get information about domains that can be used for service endpoints.. GET /api/reverse-proxies/domains",
+      "method": "GET",
+      "path": "/reverse-proxies/domains",
+      "features": [
+        "reverseProxy"
+      ],
+      "write": false,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_create_reverse_proxy_domain",
+      "description": "Create a new Custom domain for use with service endpoints, this will trigger an initial validation check. POST /api/reverse-proxies/domains",
+      "method": "POST",
+      "path": "/reverse-proxies/domains",
+      "features": [
+        "reverseProxy"
+      ],
+      "write": true,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "body": {
+            "type": "object",
+            "properties": {
+              "domain": {
+                "type": "string",
+                "description": "Domain name"
+              },
+              "target_cluster": {
+                "type": "string",
+                "description": "The proxy cluster this domain should be validated against"
+              }
+            },
+            "required": [
+              "domain",
+              "target_cluster"
+            ]
+          }
+        },
+        "required": [
+          "body"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_delete_reverse_proxy_domain",
+      "description": "Delete an existing service custom domain. DELETE /api/reverse-proxies/domains/{domainId}",
+      "method": "DELETE",
+      "path": "/reverse-proxies/domains/{domainId}",
+      "features": [
+        "reverseProxy"
+      ],
+      "write": true,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "domainId": {
+            "type": "string",
+            "description": "The custom domain ID",
+            "minLength": 1,
+            "pattern": "^(?!\\.{1,2}$)[^/\\\\%?#\\s]+$"
+          }
+        },
+        "required": [
+          "domainId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_list_reverse_proxy_tokens",
+      "description": "Returns all proxy access tokens for the account. GET /api/reverse-proxies/proxy-tokens",
+      "method": "GET",
+      "path": "/reverse-proxies/proxy-tokens",
+      "features": [
+        "reverseProxy"
+      ],
+      "write": false,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_create_reverse_proxy_token",
+      "description": "Generate an account-scoped proxy access token for self-hosted proxy registration. POST /api/reverse-proxies/proxy-tokens",
+      "method": "POST",
+      "path": "/reverse-proxies/proxy-tokens",
+      "features": [
+        "reverseProxy"
+      ],
+      "write": true,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "body": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Human-readable token name"
+              },
+              "expires_in": {
+                "type": "integer",
+                "minimum": 0,
+                "description": "Token expiration in seconds (0 = never expires)"
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "required": [
+          "body"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_delete_reverse_proxy_token",
+      "description": "Revoke an account-scoped proxy access token. DELETE /api/reverse-proxies/proxy-tokens/{tokenId}",
+      "method": "DELETE",
+      "path": "/reverse-proxies/proxy-tokens/{tokenId}",
+      "features": [
+        "reverseProxy"
+      ],
+      "write": true,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "tokenId": {
+            "type": "string",
+            "description": "The unique identifier of the proxy token",
+            "minLength": 1,
+            "pattern": "^(?!\\.{1,2}$)[^/\\\\%?#\\s]+$"
+          }
+        },
+        "required": [
+          "tokenId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_list_reverse_proxy_clusters",
+      "description": "Returns a list of available proxy clusters with their connection status. GET /api/reverse-proxies/clusters",
+      "method": "GET",
+      "path": "/reverse-proxies/clusters",
+      "features": [
+        "reverseProxy"
+      ],
+      "write": false,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {},
+        "required": [],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_delete_reverse_proxy_cluster",
+      "description": "Removes all self-hosted (BYOP) proxy registrations for the given cluster address owned by the account.. DELETE /api/reverse-proxies/clusters/{clusterAddress}",
+      "method": "DELETE",
+      "path": "/reverse-proxies/clusters/{clusterAddress}",
+      "features": [
+        "reverseProxy"
+      ],
+      "write": true,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "clusterAddress": {
+            "type": "string",
+            "description": "The address of the proxy cluster",
+            "minLength": 1,
+            "pattern": "^(?!\\.{1,2}$)[^/\\\\%?#\\s]+$"
+          }
+        },
+        "required": [
+          "clusterAddress"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "netbird_validate_reverse_proxy_domain",
+      "description": "Trigger domain ownership validation for a custom domain. GET /api/reverse-proxies/domains/{domainId}/validate",
+      "method": "GET",
+      "path": "/reverse-proxies/domains/{domainId}/validate",
+      "features": [
+        "reverseProxy"
+      ],
+      "write": true,
+      "queryParameters": [],
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {
+          "domainId": {
+            "type": "string",
+            "description": "The custom domain ID",
+            "minLength": 1,
+            "pattern": "^(?!\\.{1,2}$)[^/\\\\%?#\\s]+$"
+          }
+        },
+        "required": [
+          "domainId"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ]
+}
