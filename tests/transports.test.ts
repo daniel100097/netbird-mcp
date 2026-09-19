@@ -215,6 +215,11 @@ describe("HTTP and SSE transports", () => {
 });
 
 describe("stdio entry point", () => {
+  // SDK auto negotiation starts a probe child before the session child. Both
+  // cold starts run under QEMU in the ARM64 image build.
+  const testTimeoutMs = 60_000;
+  const requestDeadlineMs = 45_000;
+
   test.each(["auto", "legacy"] as const)(
     "serves real subprocess tool calls in %s mode with clean stdout",
     async (mode) => {
@@ -227,7 +232,6 @@ describe("stdio entry point", () => {
           return Response.json([{ id: "peer-stdio" }]);
         },
       });
-      cleanup.push(() => upstream.stop(true));
       const client = new Client(
         { name: "stdio-tests", version: "1.0.0" },
         mode === "auto" ? { versionNegotiation: { mode: "auto" } } : {},
@@ -249,20 +253,46 @@ describe("stdio entry point", () => {
       transport.stderr?.on("data", (chunk) => {
         stderr += String(chunk);
       });
-      cleanup.push(() => client.close());
-      await client.connect(transport);
-      expect(
-        (await client.listTools()).tools.some((tool) =>
-          tool.name.includes("reverse_proxy"),
-        ),
-      ).toBe(false);
-      expect(
-        (await client.callTool({ name: "netbird_list_peers", arguments: {} }))
-          .structuredContent,
-      ).toEqual({ data: [{ id: "peer-stdio" }] });
-      expect(stderr).toContain("netbird-mcp:");
-      await client.close();
+      // Cancel pending SDK requests while the test is still alive so their
+      // rejections and child-process cleanup finish before Bun's outer timeout.
+      const controller = new AbortController();
+      const deadline = setTimeout(() => {
+        controller.abort(
+          new Error(`stdio test exceeded ${requestDeadlineMs} ms`),
+        );
+      }, requestDeadlineMs);
+      const requestOptions = { signal: controller.signal };
+      try {
+        await client.connect(transport, requestOptions);
+        if (mode === "auto") expect(client.getDiscoverResult()).toBeDefined();
+        expect(
+          (await client.listTools(undefined, requestOptions)).tools.some(
+            (tool) => tool.name.includes("reverse_proxy"),
+          ),
+        ).toBe(false);
+        expect(
+          (
+            await client.callTool(
+              { name: "netbird_list_peers", arguments: {} },
+              requestOptions,
+            )
+          ).structuredContent,
+        ).toEqual({ data: [{ id: "peer-stdio" }] });
+        expect(stderr).toContain("netbird-mcp:");
+      } catch (error) {
+        throw new Error(
+          `stdio ${mode} failed. Server stderr:\n${stderr || "(empty)"}`,
+          { cause: error },
+        );
+      } finally {
+        clearTimeout(deadline);
+        try {
+          await client.close();
+        } finally {
+          await upstream.stop(true);
+        }
+      }
     },
-    10_000,
+    testTimeoutMs,
   );
 });
