@@ -12,6 +12,13 @@ export const featureEnvironment = {
   events: "NETBIRD_ENABLE_EVENTS",
   postureChecks: "NETBIRD_ENABLE_POSTURE_CHECKS",
   reverseProxy: "NETBIRD_ENABLE_REVERSE_PROXY",
+  agentNetwork: "NETBIRD_ENABLE_AGENT_NETWORK",
+  identityProviders: "NETBIRD_ENABLE_IDENTITY_PROVIDERS",
+  edr: "NETBIRD_ENABLE_EDR",
+  eventStreaming: "NETBIRD_ENABLE_EVENT_STREAMING",
+  notifications: "NETBIRD_ENABLE_NOTIFICATIONS",
+  msp: "NETBIRD_ENABLE_MSP",
+  instance: "NETBIRD_ENABLE_INSTANCE",
 } as const;
 
 export type Feature = keyof typeof featureEnvironment;

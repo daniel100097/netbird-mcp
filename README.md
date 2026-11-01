@@ -5,7 +5,7 @@ A Bun/TypeScript MCP server that acts as a client for the NetBird REST API. Buil
 - **stdio** for MCP hosts that launch a process.
 - **SSE** at `/sse` with messages posted to `/messages`.
 - **Streamable HTTP** at `/mcp`, including SSE responses and SDK v2 protocol support.
-- 90 schema-validated API tools, with environment flags for each feature group.
+- 211 schema-validated API tools covering NetBird v0.82.0, with environment flags for each feature group.
 - Read-only by default, Bun tests, Docker development/runtime images, and GitHub Container Registry publishing.
 
 ## Run with Docker Compose
@@ -89,25 +89,32 @@ docker compose run --rm --no-deps -T -e MCP_TRANSPORT=stdio netbird-mcp
 
 ## Feature flags
 
-`NETBIRD_READ_ONLY=true` removes all write tools, including domain validation (a NetBird GET endpoint with side effects). Set it to `false` to expose writes for enabled feature groups.
+`NETBIRD_READ_ONLY=true` removes all write tools, including domain validation (a NetBird GET endpoint with side effects) and Agent Network model discovery (a POST that sends a provider credential upstream). Set it to `false` to expose writes for enabled feature groups.
 
 Every feature flag below defaults to `true`. Setting a flag to `false` prevents its tools from being registered, so they are neither listed nor callable on any transport. Configuration is read at startup; restart after editing `.env`.
 
-| Environment flag                | Controls                                                              |
-| ------------------------------- | --------------------------------------------------------------------- |
-| `NETBIRD_ENABLE_PEERS`          | Peer information, accessible peers, updates, deletion, and jobs       |
-| `NETBIRD_ENABLE_PEER_CONTROL`   | Peer updates, deletion, and job creation; peer reads remain available |
-| `NETBIRD_ENABLE_GROUPS`         | Groups                                                                |
-| `NETBIRD_ENABLE_POLICIES`       | Access policies                                                       |
-| `NETBIRD_ENABLE_ROUTES`         | Routes                                                                |
-| `NETBIRD_ENABLE_NETWORKS`       | Networks, network resources, and routers                              |
-| `NETBIRD_ENABLE_DNS`            | Nameservers, settings, zones, and records                             |
-| `NETBIRD_ENABLE_SETUP_KEYS`     | Setup keys                                                            |
-| `NETBIRD_ENABLE_USERS`          | User listing, creation, updates, deletion, and current user           |
-| `NETBIRD_ENABLE_ACCOUNTS`       | Account listing, updates, and deletion                                |
-| `NETBIRD_ENABLE_EVENTS`         | Audit, traffic, and reverse proxy access logs                         |
-| `NETBIRD_ENABLE_POSTURE_CHECKS` | Posture checks                                                        |
-| `NETBIRD_ENABLE_REVERSE_PROXY`  | Reverse proxy services, domains, clusters, tokens, and access logs    |
+| Environment flag                    | Controls                                                                                      |
+| ----------------------------------- | --------------------------------------------------------------------------------------------- |
+| `NETBIRD_ENABLE_PEERS`              | Peer information, accessible peers, updates, deletion, jobs, and temporary access peers       |
+| `NETBIRD_ENABLE_PEER_CONTROL`       | Peer updates, deletion, job creation, and temporary access peers; peer reads remain available |
+| `NETBIRD_ENABLE_GROUPS`             | Groups                                                                                        |
+| `NETBIRD_ENABLE_POLICIES`           | Access policies                                                                               |
+| `NETBIRD_ENABLE_ROUTES`             | Routes                                                                                        |
+| `NETBIRD_ENABLE_NETWORKS`           | Networks, network resources, and routers                                                      |
+| `NETBIRD_ENABLE_DNS`                | Nameservers, settings, zones, and records                                                     |
+| `NETBIRD_ENABLE_SETUP_KEYS`         | Setup keys                                                                                    |
+| `NETBIRD_ENABLE_USERS`              | Users, current user, invites, invite resends, and approval or rejection of pending users      |
+| `NETBIRD_ENABLE_ACCOUNTS`           | Account listing, updates, and deletion                                                        |
+| `NETBIRD_ENABLE_EVENTS`             | Audit, traffic, reverse proxy, and Agent Network access logs                                  |
+| `NETBIRD_ENABLE_POSTURE_CHECKS`     | Posture checks and the country/city lists used by geolocation checks                          |
+| `NETBIRD_ENABLE_REVERSE_PROXY`      | Reverse proxy services, domains, clusters, tokens, and access logs                            |
+| `NETBIRD_ENABLE_AGENT_NETWORK`      | Agent Network settings, providers, policies, guardrails, budgets, gateway, usage, and logs    |
+| `NETBIRD_ENABLE_IDENTITY_PROVIDERS` | Identity providers and Google, Azure, Okta SCIM, and SCIM user-sync integrations              |
+| `NETBIRD_ENABLE_EDR`                | Intune, SentinelOne, Falcon, Huntress, and FleetDM integrations, and peer compliance bypasses |
+| `NETBIRD_ENABLE_EVENT_STREAMING`    | Event streaming integrations                                                                  |
+| `NETBIRD_ENABLE_NOTIFICATIONS`      | Notification channels and event types                                                         |
+| `NETBIRD_ENABLE_MSP`                | MSP tenants, tenant invitations, unlinking, and DNS verification                              |
+| `NETBIRD_ENABLE_INSTANCE`           | Instance status and management version information                                            |
 
 For example, allow management of groups, policies, and other enabled areas while disabling peer control and all reverse proxy tools:
 
@@ -117,7 +124,7 @@ NETBIRD_ENABLE_PEER_CONTROL=false
 NETBIRD_ENABLE_REVERSE_PROXY=false
 ```
 
-Peer writes require both peer flags. Reverse proxy logs require both the events and reverse proxy flags. These switches control this server's tool exposure; NetBird token permissions still apply. A disabled peer-control flag does not prevent enabled policy/group tools from changing network access.
+Peer writes require both peer flags. Reverse proxy logs require both the events and reverse proxy flags; Agent Network access logs require both the events and Agent Network flags. EDR compliance bypasses are controlled by the EDR flag alone. These switches control this server's tool exposure; NetBird token permissions still apply. A disabled peer-control flag does not prevent enabled policy/group tools from changing network access.
 
 Tools use explicit endpoints and validated request schemas, with no unrestricted HTTP request tool. Path parameters are top-level arguments, filters are under `query`, and write payloads are under `body`:
 
@@ -141,7 +148,7 @@ Tools use explicit endpoints and validated request schemas, with no unrestricted
 
 Results contain JSON text and `structuredContent: { "data": ... }`. API failures return MCP tool errors with HTTP status. Calls have a timeout, propagate cancellation, refuse redirects, and limit responses to 10 MiB. Writes are never automatically retried.
 
-Tool coverage is an explicit allowlist, not the entire NetBird API. Billing, identity-provider integrations, user-token management, bootstrap/setup, and other unlisted APIs are not exposed. Newer or cloud-only endpoints may return an upstream error on older/self-hosted NetBird deployments. Read an existing object before using PUT; some APIs require the complete payload.
+Tool coverage is an explicit allowlist, not the entire NetBird API. Billing (including MSP tenant subscriptions), personal access token management, instance bootstrap (`/setup`), password changes, and the unauthenticated invite-acceptance endpoints are not exposed. Newer or cloud-only endpoints may return an upstream error on older/self-hosted NetBird deployments. Read an existing object before using PUT; some APIs require the complete payload.
 
 ## Other environment settings
 
@@ -191,7 +198,7 @@ bun run dev
 
 The tests exercise configuration, API authentication, path safety, error redaction, timeouts/cancellation, input validation, feature removal, real HTTP/SSE connections, real stdio subprocesses, and shutdown. NetBird responses are supplied by local fixtures; no live NetBird account is needed.
 
-The checked-in [tool catalog](src/netbird/catalog.json) is generated from NetBird's OpenAPI schema at the revision recorded in [generate-catalog.ts](src/scripts/generate-catalog.ts). Regular builds are offline with respect to NetBird's schema. To update it, review the explicit route allowlist and pinned revision, then run:
+The checked-in [tool catalog](src/netbird/catalog.json) is generated from NetBird's OpenAPI schema at the revision (currently v0.82.0) recorded in [generate-catalog.ts](src/scripts/generate-catalog.ts). Regular builds are offline with respect to NetBird's schema. To update it, review the explicit route allowlist and pinned revision, then run:
 
 ```sh
 bun run generate:catalog

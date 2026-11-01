@@ -7,7 +7,8 @@ import type { Feature } from "../config.ts";
 import type { Method, ToolDefinition } from "../netbird/types.ts";
 import { schemaValidator } from "../netbird/schema.ts";
 
-const revision = "7d8f4fa31c2c8a3ebd40f041065ddbae6055d5f3";
+// NetBird v0.82.0.
+const revision = "3c00a97878e6af537d28c3bdd4f42cb4286aa883";
 const source = `https://raw.githubusercontent.com/netbirdio/netbird/${revision}/shared/management/http/api/openapi.yml`;
 type Schema = Record<string, unknown>;
 interface Parameter {
@@ -33,8 +34,11 @@ interface OpenApi {
 type Route = [
   path: string,
   noun: string,
-  feature: Feature,
+  // Every listed feature must be enabled for the route's tools to register.
+  feature: Feature | Feature[],
   getAction?: "list" | "get" | "validate",
+  // Full tool names (without the netbird_ prefix) for action endpoints.
+  names?: Partial<Record<Lowercase<Method>, string>>,
 ];
 const routes: Route[] = [];
 function resource(
@@ -49,11 +53,20 @@ function resource(
     [`${path}/{${id}}`, singular, feature, "get"],
   );
 }
+function action(
+  path: string,
+  method: Lowercase<Method>,
+  name: string,
+  feature: Feature,
+) {
+  routes.push([path, name, feature, undefined, { [method]: name }]);
+}
 resource("/peers", "peer", "peers", "peerId", "peers");
 routes.push(
   ["/peers/{peerId}/accessible-peers", "accessible_peers", "peers"],
   ["/peers/{peerId}/jobs", "peer_jobs", "peers"],
   ["/peers/{peerId}/jobs/{jobId}", "peer_job", "peers", "get"],
+  ["/peers/{peerId}/temporary-access", "temporary_access_peer", "peers"],
 );
 resource("/groups", "group", "groups", "groupId", "groups");
 resource("/policies", "policy", "policies", "policyId", "policies");
@@ -73,6 +86,7 @@ resource(
   "routerId",
   "networks",
 );
+routes.push(["/networks/routers", "all_network_routers", "networks"]);
 resource(
   "/dns/nameservers",
   "dns_nameserver",
@@ -92,6 +106,16 @@ routes.push(["/dns/settings", "dns_settings", "dns", "get"]);
 resource("/setup-keys", "setup_key", "setup_keys", "keyId", "setupKeys");
 resource("/users", "user", "users", "userId", "users");
 routes.push(["/users/current", "current_user", "users", "get"]);
+action("/users/{userId}/invite", "post", "resend_user_invite", "users");
+action("/users/{userId}/approve", "post", "approve_user", "users");
+action("/users/{userId}/reject", "delete", "reject_user", "users");
+resource("/users/invites", "user_invite", "user_invites", "inviteId", "users");
+action(
+  "/users/invites/{inviteId}/regenerate",
+  "post",
+  "regenerate_user_invite",
+  "users",
+);
 resource("/accounts", "account", "accounts", "accountId", "accounts");
 resource(
   "/posture-checks",
@@ -100,10 +124,15 @@ resource(
   "postureCheckId",
   "postureChecks",
 );
+// Country and city names for geolocation posture checks.
+routes.push(
+  ["/locations/countries", "countries", "postureChecks"],
+  ["/locations/countries/{country}/cities", "country_cities", "postureChecks"],
+);
 routes.push(
   ["/events/audit", "audit_events", "events"],
   ["/events/network-traffic", "traffic_events", "events"],
-  ["/events/proxy", "reverse_proxy_events", "reverseProxy"],
+  ["/events/proxy", "reverse_proxy_events", ["reverseProxy", "events"]],
 );
 resource(
   "/reverse-proxies/services",
@@ -138,6 +167,139 @@ routes.push([
   "reverse_proxy_domain",
   "reverseProxy",
   "validate",
+]);
+routes.push(
+  ["/instance", "instance_status", "instance", "get"],
+  ["/instance/version", "instance_version", "instance", "get"],
+);
+resource(
+  "/identity-providers",
+  "identity_provider",
+  "identity_providers",
+  "idpId",
+  "identityProviders",
+);
+// User and group synchronization from external identity providers.
+for (const idp of ["google", "azure", "okta_scim", "scim"]) {
+  const path = `/integrations/${idp.replace("_", "-")}-idp`;
+  const noun = `${idp}_idp_integration`;
+  resource(path, noun, `${noun}s`, "id", "identityProviders");
+  routes.push([`${path}/{id}/logs`, `${noun}_logs`, "identityProviders"]);
+  if (idp.includes("scim"))
+    action(
+      `${path}/{id}/token`,
+      "post",
+      `regenerate_${noun}_token`,
+      "identityProviders",
+    );
+  else action(`${path}/{id}/sync`, "post", `sync_${noun}`, "identityProviders");
+}
+for (const edr of ["intune", "sentinelone", "falcon", "huntress", "fleetdm"])
+  routes.push([
+    `/integrations/edr/${edr}`,
+    `edr_${edr}_integration`,
+    "edr",
+    "get",
+  ]);
+routes.push(
+  ["/peers/edr/bypassed", "edr_bypassed_peers", "edr"],
+  ["/peers/{peer-id}/edr/bypass", "edr_peer_bypass", "edr"],
+);
+resource(
+  "/event-streaming",
+  "event_streaming_integration",
+  "event_streaming_integrations",
+  "id",
+  "eventStreaming",
+);
+routes.push([
+  "/integrations/notifications/types",
+  "notification_types",
+  "notifications",
+]);
+resource(
+  "/integrations/notifications/channels",
+  "notification_channel",
+  "notification_channels",
+  "channelId",
+  "notifications",
+);
+routes.push(
+  [
+    "/integrations/agent-network/managed-proxy",
+    "agent_network_managed_proxy",
+    "agentNetwork",
+    "get",
+  ],
+  [
+    "/agent-network/access-logs",
+    "agent_network_access_logs",
+    ["agentNetwork", "events"],
+  ],
+  [
+    "/agent-network/access-log-sessions",
+    "agent_network_access_log_sessions",
+    ["agentNetwork", "events"],
+  ],
+  [
+    "/agent-network/usage/overview",
+    "agent_network_usage_overview",
+    "agentNetwork",
+    "get",
+  ],
+  ["/agent-network/consumption", "agent_network_consumption", "agentNetwork"],
+  [
+    "/agent-network/agent-config",
+    "agent_network_agent_config",
+    "agentNetwork",
+    "get",
+  ],
+  ["/agent-network/settings", "agent_network_settings", "agentNetwork", "get"],
+  [
+    "/agent-network/catalog/providers",
+    "agent_network_catalog_providers",
+    "agentNetwork",
+  ],
+);
+action(
+  "/agent-network/catalog/providers/models",
+  "post",
+  "discover_agent_network_provider_models",
+  "agentNetwork",
+);
+for (const [plural, id] of [
+  ["budget_rules", "ruleId"],
+  ["providers", "providerId"],
+  ["policies", "policyId"],
+  ["guardrails", "guardrailId"],
+] as const)
+  resource(
+    `/agent-network/${plural.replace("_", "-")}`,
+    `agent_network_${plural === "policies" ? "policy" : plural.slice(0, -1)}`,
+    `agent_network_${plural}`,
+    id,
+    "agentNetwork",
+  );
+// MSP tenant subscriptions are billing operations and are not exposed.
+resource("/integrations/msp/tenants", "msp_tenant", "msp_tenants", "id", "msp");
+action(
+  "/integrations/msp/tenants/{id}/unlink",
+  "post",
+  "unlink_msp_tenant",
+  "msp",
+);
+action(
+  "/integrations/msp/tenants/{id}/dns",
+  "post",
+  "verify_msp_tenant_dns",
+  "msp",
+);
+routes.push([
+  "/integrations/msp/tenants/{id}/invite",
+  "msp_tenant_invite",
+  "msp",
+  undefined,
+  { post: "invite_msp_tenant", put: "respond_msp_tenant_invite" },
 ]);
 
 const response = await fetch(source, { signal: AbortSignal.timeout(30_000) });
@@ -191,13 +353,15 @@ function normalize(value: unknown, refs: string[] = []): unknown {
 }
 
 const tools: ToolDefinition[] = [];
-for (const [path, noun, feature, getAction = "list"] of routes) {
+for (const [path, noun, feature, getAction = "list", names] of routes) {
   const pathItem = document.paths[`/api${path}`];
   if (!pathItem) throw new Error(`Missing API path ${path}`);
+  const features = [feature].flat();
   for (const method of ["get", "post", "put", "patch", "delete"] as const) {
     const operation = pathItem[method];
-    if (!operation) continue;
-    const action =
+    // Routes with explicit names expose only the named methods.
+    if (!operation || (names && !names[method])) continue;
+    const verb =
       method === "get"
         ? getAction
         : { post: "create", put: "update", patch: "patch", delete: "delete" }[
@@ -260,16 +424,15 @@ for (const [path, noun, feature, getAction = "list"] of routes) {
     // Compile now: fail regeneration if a published request schema is invalid.
     fromJsonSchema(inputSchema, schemaValidator);
     tools.push({
-      name: `netbird_${action}_${toolNoun}`,
-      description: `${operation.description || operation.summary}. ${method.toUpperCase()} /api${path}`,
+      name: `netbird_${names?.[method] ?? `${verb}_${toolNoun}`}`,
+      description: `${(operation.description || operation.summary).trim().replace(/\.$/, "")}. ${method.toUpperCase()} /api${path}`,
       method: method.toUpperCase() as Method,
       path,
       features: [
-        feature,
-        ...(feature === "peers" && method !== "get"
+        ...features,
+        ...(features.includes("peers") && method !== "get"
           ? ["peerControl" as const]
           : []),
-        ...(path === "/events/proxy" ? ["events" as const] : []),
       ],
       write: method !== "get" || getAction === "validate",
       queryParameters: parameters

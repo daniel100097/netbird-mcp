@@ -6,7 +6,7 @@ import {
 import { createMcpHandler } from "@modelcontextprotocol/server";
 import { loadConfig } from "../src/config.ts";
 import { NetBirdClient, type Fetch } from "../src/netbird/client.ts";
-import { createNetBirdServer } from "../src/server.ts";
+import { createNetBirdServer, toolDefinitions } from "../src/server.ts";
 
 const cleanup: (() => Promise<void>)[] = [];
 afterEach(async () => {
@@ -48,7 +48,7 @@ describe("MCP tool registration and calls", () => {
     });
     expect(client.getDiscoverResult()).toBeDefined();
     const { tools } = await client.listTools();
-    expect(tools.length).toBe(90);
+    expect(tools.length).toBe(211);
     expect(
       tools.find((t) => t.name === "netbird_delete_peer")?.annotations
         ?.destructiveHint,
@@ -118,6 +118,44 @@ describe("MCP tool registration and calls", () => {
       }),
     ).rejects.toThrow("not found");
   });
+  test("action endpoints use their own names, paths, and methods", async () => {
+    const received: Request[] = [];
+    const client = await connect({}, async (url, init) => {
+      received.push(new Request(url, init));
+      return new Response(null, { status: 200 });
+    });
+    for (const [name, args] of [
+      ["netbird_approve_user", { userId: "user-1" }],
+      ["netbird_create_edr_peer_bypass", { "peer-id": "peer-1" }],
+      ["netbird_sync_google_idp_integration", { id: "idp-1" }],
+    ] as const) {
+      const result = await client.callTool({ name, arguments: args });
+      expect(result.structuredContent).toEqual({ data: { success: true } });
+    }
+    expect(
+      received.map((r) => `${r.method} ${new URL(r.url).pathname}`),
+    ).toEqual([
+      "POST /api/users/user-1/approve",
+      "POST /api/peers/peer-1/edr/bypass",
+      "POST /api/integrations/google-idp/idp-1/sync",
+    ]);
+    expect(received.every((r) => r.body === null)).toBe(true);
+  });
+  test("does not expose billing, bootstrap, or invitee-side endpoints", () => {
+    for (const excluded of [
+      "/integrations/billing",
+      "/integrations/msp/tenants/{id}/subscription",
+      "/setup",
+      "/users/invites/{token}",
+      "/users/{userId}/password",
+      "/users/{userId}/tokens",
+    ])
+      expect(
+        toolDefinitions.filter(
+          ({ path }) => path === excluded || path.startsWith(`${excluded}/`),
+        ),
+      ).toEqual([]);
+  });
   test.each([
     ["PEERS", "netbird_list_peers"],
     ["GROUPS", "netbird_list_groups"],
@@ -129,8 +167,16 @@ describe("MCP tool registration and calls", () => {
     ["USERS", "netbird_get_current_user"],
     ["ACCOUNTS", "netbird_list_accounts"],
     ["EVENTS", "netbird_list_reverse_proxy_events"],
+    ["EVENTS", "netbird_list_agent_network_access_logs"],
     ["POSTURE_CHECKS", "netbird_list_posture_checks"],
-  ])("honors NETBIRD_ENABLE_%s", async (flag, toolName) => {
+    ["AGENT_NETWORK", "netbird_list_agent_network_providers"],
+    ["IDENTITY_PROVIDERS", "netbird_list_scim_idp_integrations"],
+    ["EDR", "netbird_list_edr_bypassed_peers"],
+    ["EVENT_STREAMING", "netbird_list_event_streaming_integrations"],
+    ["NOTIFICATIONS", "netbird_list_notification_channels"],
+    ["MSP", "netbird_list_msp_tenants"],
+    ["INSTANCE", "netbird_get_instance_version"],
+  ])("honors NETBIRD_ENABLE_%s (%s)", async (flag, toolName) => {
     const client = await connect({ [`NETBIRD_ENABLE_${flag}`]: "false" });
     expect(
       (await client.listTools()).tools.map((tool) => tool.name),
