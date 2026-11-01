@@ -2,7 +2,7 @@
 
 `src/netbird/catalog.json` contains request schemas and descriptions derived from
 `shared/management/http/api/openapi.yml` in [netbirdio/netbird](https://github.com/netbirdio/netbird),
-revision `7d8f4fa31c2c8a3ebd40f041065ddbae6055d5f3`.
+revision `3c00a97878e6af537d28c3bdd4f42cb4286aa883` (v0.82.0).
 
 The source schema is in the BSD-3-Clause portion of that repository.
 
